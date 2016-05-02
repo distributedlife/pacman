@@ -1,0 +1,30 @@
+{
+  "game": {
+    "id": "pacman",
+    "name": "The Namco classic recreated using ensemblejs"
+  },
+  "client": {
+    "aspectRatio": 1
+  },
+  "pacman": {
+    "board": {
+      "width": 520,
+      "height": 520
+    },
+    "avatar": {
+      "speed": 100
+    }
+  },
+  "ensemble": {
+    "maxPlayers": 5,
+    "pause": "never",
+    "autoSaveThrottle": 30
+  },
+  "debug": {
+    "develop": true,
+    "multiplayer": true
+  },
+  "logging": {
+    "logLevel": "info"
+  }
+}
