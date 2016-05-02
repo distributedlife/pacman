@@ -9,21 +9,34 @@ function p(id, path) {
 }
 
 module.exports = {
-  type: 'OnPhysicsFrame',
-  deps: ['Config'],
-  func: function Pacman (config) {
-    return function (delta, state) {
-      return map(state.unwrap('players'), function (player) {
-        var position = player.pacman.avatar.position;
-        var velocity = player.pacman.avatar.velocity;
-        var speed = config().pacman.avatar.speed;
+  type: 'MovePlayer',
+  deps: ['Config', 'DefinePlugin'],
+  func: function Pacman (config, define) {
 
-        var newPosition = add(position, scale(velocity, speed * delta));
+    define()('OnPhysicsFrame', function Pacman () {
+      return function setPositionToGhost (delta, state) {
+        return map(state.unwrap('players'), function (player) {
+          return [
+            p(player.id, 'pacman.avatar.position'), state.unwrap(p(player.id, 'pacman.avatar.ghost'))
+          ];
+        });
+      };
+    });
 
-        return [
-          p(player.id, 'pacman.avatar.position'), newPosition
-        ];
-      });
-    };
+    define()('OnPhysicsFrame', function Pacman () {
+      return function moveCollisionGhost (delta, state) {
+        return map(state.unwrap('players'), function (player) {
+          var position = player.pacman.avatar.position;
+          var velocity = player.pacman.avatar.velocity;
+          var speed = config().pacman.avatar.speed;
+
+          var newPosition = add(position, scale(velocity, speed * delta));
+
+          return [
+            p(player.id, 'pacman.avatar.ghost'), newPosition
+          ];
+        });
+      };
+    });
   }
 };

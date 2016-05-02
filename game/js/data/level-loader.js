@@ -14,8 +14,8 @@ function parseCell (colIndex, rowIndex) {
 
 function parsePoint (colIndex, rowIndex) {
   return {
-    x: (colIndex * gridSize) - (gridSize / 2),
-    y: (rowIndex * gridSize) - (gridSize / 2)
+    x: (colIndex * gridSize) + (gridSize / 2),
+    y: (rowIndex * gridSize) + (gridSize / 2)
   };
 }
 

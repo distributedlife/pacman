@@ -3,13 +3,18 @@
 var merge = require('lodash').merge;
 var levelLoader = require('../data/level-loader');
 
+var length = 8;
+var offset = length / 2;
+
 function avatar (player) {
   var avatar = {
     id: player.id,
-    length: 8
+    length: length
   };
 
   merge(avatar, player.pacman.avatar);
+
+  avatar.position = {x: avatar.ghost.x - offset, y: avatar.ghost.y - offset};
 
   return avatar;
 }

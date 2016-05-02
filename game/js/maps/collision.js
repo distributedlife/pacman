@@ -4,10 +4,13 @@ function p(id, path) {
   return 'players:' + id + '.' + path;
 }
 
-function stop (delta, state, metadata) {
-  console.log(metadata);
+function resetGhostToAvatarPosition (delta, state, metadata) {
+  var playerId = metadata.avatars.target.id;
+  var position = state.unwrap(p(playerId, 'pacman.avatar.position'));
+
   return [
-    p(metadata.avatars.target.id, 'pacman.avatar.velocity'), {x: 0, y: 0}
+    [p(metadata.avatars.target.id, 'pacman.avatar.ghost'), position],
+    [p(metadata.avatars.target.id, 'pacman.avatar.velocity'), {x: 0, y: 0}]
   ];
 }
 
@@ -16,7 +19,7 @@ module.exports = {
   func: function Pacman () {
     return {
       'avatars': [
-        { and: ['walls'], start: [stop] }
+        { and: ['walls'], start: [resetGhostToAvatarPosition] }
       ]
     };
   }

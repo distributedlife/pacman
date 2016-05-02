@@ -74,8 +74,8 @@ module.exports = {
       var shape = new PIXI.Graphics();
       shape.beginFill(0x888800);
       shape.drawRect(0, 0, 10, 10);
-      shape.position.x = avatar.position.x;
-      shape.position.y = avatar.position.y;
+      shape.position.x = avatar.position.x - 5;
+      shape.position.y = avatar.position.y - 5;
       shape.zIndex = 1;
 
       console.log(avatar.position);
@@ -92,8 +92,8 @@ module.exports = {
     }
 
     function moveAvatar (id, player) {
-      avatars[id].position.x = player.pacman.avatar.position.x;
-      avatars[id].position.y = player.pacman.avatar.position.y;
+      avatars[id].position.x = player.pacman.avatar.position.x - 5;
+      avatars[id].position.y = player.pacman.avatar.position.y - 5;
     }
 
     var stage;

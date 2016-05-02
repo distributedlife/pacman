@@ -14,6 +14,8 @@ module.exports = {
           avatar: {
             position: levelLoader(require('../data/map')).spawn[0],
             velocity: {x: -1, y: 0},
+            blocked: [],
+            ghost: levelLoader(require('../data/map')).spawn[0]
           }
         }
       };
