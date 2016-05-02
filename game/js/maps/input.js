@@ -5,19 +5,19 @@ function p(id, path) {
 }
 
 function up (state, input, data) {
-  return [p(data.playerId, 'pacman.avatar.velocity'), {x: 0, y: -1}];
+  return [p(data.playerId, 'pacman.avatar.velocity.y'), -1];
 }
 
 function down (state, input, data) {
-  return [p(data.playerId, 'pacman.avatar.velocity'), {x: 0, y: +1}];
+  return [p(data.playerId, 'pacman.avatar.velocity.y'), +1];
 }
 
 function left (state, input, data) {
-  return [p(data.playerId, 'pacman.avatar.velocity'), {x: -1, y: 0}];
+  return [p(data.playerId, 'pacman.avatar.velocity.x'), -1];
 }
 
 function right (state, input, data) {
-  return [p(data.playerId, 'pacman.avatar.velocity'), {x: +1, y: 0}];
+  return [p(data.playerId, 'pacman.avatar.velocity.x'), +1];
 }
 
 module.exports = {

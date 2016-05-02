@@ -1,9 +1,6 @@
 'use strict';
 
 var PIXI = require('pixi.js');
-var levelLoader = require('../data/level-loader');
-var walls = levelLoader(require('../data/map')).walls;
-var each = require('lodash').each;
 
 function boardIsSmallerThenScreen(boardDimensions, screenDimensions) {
   return (boardDimensions.width < screenDimensions.usableWidth ||
@@ -44,62 +41,29 @@ function scaleBoard (dims, config) {
   }
 }
 
+// var define = require('ensemblejs/define');
+// var state = require('ensemblejs/state');;
+
 //jshint maxparams:false
 module.exports = {
   type: 'OnClientReady',
-  deps: ['Config', 'StateTracker', 'DefinePlugin', '$'],
-  func: function View (config, tracker, define, $) {
+  deps: ['Config', 'StateTracker', 'DefinePlugin', '$', 'DeviceMode'],
+  func: function View (config, tracker, define, $, deviceMode) {
 
     var scalingFactor = 1;
 
-    function createBoard (dims) {
-      var shape = new PIXI.Graphics();
-      shape.beginFill(0x000000);
-      shape.drawRect(0, 0, dims.usableWidth, dims.usableHeight);
-      shape.zIndex = 10000;
-
-      return shape;
-    }
-
-    function createWall (wall) {
-      var shape = new PIXI.Graphics();
-      shape.beginFill(0x0000FF);
-      shape.drawRect(wall.position.x, wall.position.y, wall.width, wall.height);
-      shape.zIndex = 1000;
-
-      return shape;
-    }
-
-    function createAvatar (avatar) {
-      var shape = new PIXI.Graphics();
-      shape.beginFill(0x888800);
-      shape.drawRect(0, 0, 10, 10);
-      shape.position.x = avatar.position.x - 5;
-      shape.position.y = avatar.position.y - 5;
-      shape.zIndex = 1;
-
-      console.log(avatar.position);
-
-      return shape;
-    }
-
-
-    var avatars = {};
-    function addAvatar (id, player, stage) {
-      avatars[id] = createAvatar(player.pacman.avatar);
-
-      stage.addChild(avatars[id]);
-    }
-
-    function moveAvatar (id, player) {
-      avatars[id].position.x = player.pacman.avatar.position.x - 5;
-      avatars[id].position.y = player.pacman.avatar.position.y - 5;
-    }
+    var setupScreenAsSharedScreen = require('./shared');
+    var setupScreenAsPacman = require('./pacman');
+    var setupScreenAsBlinky = require('./blinky');
+    var setupScreenAsPinky = require('./pinky');
+    var setupScreenAsInky = require('./inky');
+    var setupScreenAsClyde = require('./clyde');
+    var setupScreenAsWaitingRoom = require('./waiting-room');
 
     var stage;
     var offset;
     var scale;
-    return function setup (dims) {
+    return function setup (dims, playerNumber) {
       scalingFactor = dims.usableWidth / 280;
 
       stage = new PIXI.Container();
@@ -113,14 +77,16 @@ module.exports = {
       stage.scale.x = scale.x;
       stage.scale.y = scale.y;
 
-      stage.addChild(createBoard(dims));
+      // if (deviceMode() === 'observer') {
+        setupScreenAsSharedScreen(dims, stage, tracker);
+      // }
 
-      each(walls, function(wall) {
-        stage.addChild(createWall(wall));
-      });
-
-      tracker().onElementAdded('players', addAvatar, [stage]);
-      tracker().onElementChanged('players', moveAvatar);
+      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pacman', setupScreenAsPacman, [stage]);
+      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'blinky', setupScreenAsBlinky, [stage]);
+      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pinky', setupScreenAsPinky, [stage]);
+      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'inky', setupScreenAsInky, [stage]);
+      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'clyde', setupScreenAsClyde, [stage]);
+      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'waiting', setupScreenAsWaitingRoom, [stage]);
 
       define()('OnRenderFrame', function OnRenderFrame () {
         return function renderScene () {
