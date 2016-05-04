@@ -18,6 +18,10 @@ function setPositionToGhost (delta, state) {
 
 var define = require('ensemblejs/lib/define').default;
 
+function decrement (current) {
+  return current - 1;
+}
+
 module.exports = {
   type: 'MovePlayer',
   deps: ['Config'],
@@ -25,6 +29,10 @@ module.exports = {
 
     function moveCollisionGhost (delta, state) {
       return map(state.unwrap('players'), function (player) {
+        if (player.pacman.frozenTurns > 0) {
+          return [p(player.id, 'pacman.frozenTurns'), decrement];
+        }
+
         var position = player.pacman.avatar.position;
         var velocity = player.pacman.avatar.velocity;
         var speed = config().pacman.avatar.speed;
