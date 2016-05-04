@@ -20,13 +20,20 @@ function eatPellet (delta, state, metadata) {
   ];
 }
 
+function increaseScore (delta, state, metadata) {
+  var playerId = metadata.avatars.target.id;
+  var score = state.get(p(playerId, 'pacman.score'));
+
+  return [p(metadata.avatars.target.id, 'pacman.score'), score + 10];
+}
+
 module.exports = {
   type: 'CollisionMap',
   func: function Pacman () {
     return {
       'avatars': [
         { and: ['walls'], start: [resetGhostToAvatarPosition] },
-        { and: ['pellets'], start: [eatPellet]}
+        { and: ['pellets'], start: [eatPellet, increaseScore]}
       ]
     };
   }

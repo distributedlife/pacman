@@ -4,8 +4,10 @@ var PIXI = require('pixi.js');
 var levelLoader = require('../data/level-loader');
 var walls = levelLoader(require('../data/map')).walls;
 var each = require('lodash').each;
+var filter = require('lodash').filter;
 var avatars = {};
 var pellets = {};
+var $ = require('zepto-browserify').$;
 
 function createBoard (dims) {
   var shape = new PIXI.Graphics();
@@ -68,7 +70,21 @@ function moveAvatar (id, player) {
   avatars[id].position.y = player.pacman.avatar.position.y - 5;
 }
 
+function updateScore (current) {
+  $('#score').text(current);
+}
+
+//Lens
+function pacmanScore (state) {
+  var pacman = filter(state.players, { pacman: { role: 'pacman' }})[0];
+
+  return (pacman === undefined) ? 0 : pacman.pacman.score;
+}
+
 function display (dims, stage, tracker) {
+  var overlay = require('../../views/overlays/pacman.pug');
+  $('#overlay').append(overlay());
+
   stage.addChild(createBoard(dims));
 
   each(walls, function(wall) {
@@ -76,9 +92,11 @@ function display (dims, stage, tracker) {
   });
 
   tracker().onElementAdded('players', addAvatar, [stage]);
+  tracker().onElementAdded('players', addAvatar, [stage]);
   tracker().onElementChanged('players', moveAvatar);
   tracker().onElementAdded('pacman.pellets', addPellet, [stage]);
   tracker().onElementRemoved('pacman.pellets', removePellet, [stage]);
+  tracker().onChangeOf(pacmanScore, updateScore);
 }
 
 module.exports = display;

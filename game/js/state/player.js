@@ -21,6 +21,7 @@ module.exports = {
       return {
         pacman: {
           role: assignRole(playerId),
+          score: 0,
           avatar: {
             position: levelLoader(require('../data/map')).spawn[0],
             velocity: {x: -1, y: 0},
