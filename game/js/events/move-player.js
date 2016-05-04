@@ -8,35 +8,41 @@ function p(id, path) {
   return 'players:' + id + '.' + path;
 }
 
+function setPositionToGhost (delta, state) {
+  return map(state.unwrap('players'), function (player) {
+    return [
+      p(player.id, 'pacman.avatar.position'), state.unwrap(p(player.id, 'pacman.avatar.ghost'))
+    ];
+  });
+}
+
+var define = require('ensemblejs/lib/define').default;
+
 module.exports = {
   type: 'MovePlayer',
-  deps: ['Config', 'DefinePlugin'],
-  func: function Pacman (config, define) {
+  deps: ['Config'],
+  func: function Pacman (config) {
 
-    define()('OnPhysicsFrame', function Pacman () {
-      return function setPositionToGhost (delta, state) {
-        return map(state.unwrap('players'), function (player) {
-          return [
-            p(player.id, 'pacman.avatar.position'), state.unwrap(p(player.id, 'pacman.avatar.ghost'))
-          ];
-        });
-      };
+    function moveCollisionGhost (delta, state) {
+      return map(state.unwrap('players'), function (player) {
+        var position = player.pacman.avatar.position;
+        var velocity = player.pacman.avatar.velocity;
+        var speed = config().pacman.avatar.speed;
+
+        var newPosition = add(position, scale(velocity, speed * delta));
+
+        return [
+          p(player.id, 'pacman.avatar.ghost'), newPosition
+        ];
+      });
+    }
+
+    define('OnPhysicsFrame', function Pacman () {
+      return setPositionToGhost;
     });
 
-    define()('OnPhysicsFrame', function Pacman () {
-      return function moveCollisionGhost (delta, state) {
-        return map(state.unwrap('players'), function (player) {
-          var position = player.pacman.avatar.position;
-          var velocity = player.pacman.avatar.velocity;
-          var speed = config().pacman.avatar.speed;
-
-          var newPosition = add(position, scale(velocity, speed * delta));
-
-          return [
-            p(player.id, 'pacman.avatar.ghost'), newPosition
-          ];
-        });
-      };
+    define('OnPhysicsFrame', function Pacman () {
+      return moveCollisionGhost;
     });
   }
 };

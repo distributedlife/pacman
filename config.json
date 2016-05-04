@@ -12,12 +12,11 @@
       "height": 520
     },
     "avatar": {
-      "speed": 100
+      "speed": 50
     }
   },
   "ensemble": {
     "maxPlayers": 5,
-    "pause": "never",
     "autoSaveThrottle": 30
   },
   "debug": {

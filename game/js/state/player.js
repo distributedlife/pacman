@@ -5,11 +5,11 @@ var levelLoader = require('../data/level-loader');
 var roles = ['pacman', 'blinky', 'pinky', 'inky', 'clyde'];
 
 function assignRole (playerId) {
-  if (playerId >= roles.length) {
+  if ((playerId - 1) >= roles.length) {
     return 'waiting';
   }
 
-  return roles[playerId];
+  return roles[playerId - 1];
 }
 
 module.exports = {
@@ -24,7 +24,6 @@ module.exports = {
           avatar: {
             position: levelLoader(require('../data/map')).spawn[0],
             velocity: {x: -1, y: 0},
-            blocked: [],
             ghost: levelLoader(require('../data/map')).spawn[0]
           }
         }

@@ -14,12 +14,19 @@ function resetGhostToAvatarPosition (delta, state, metadata) {
   ];
 }
 
+function eatPellet (delta, state, metadata) {
+  return [
+    'pacman.pellets-', {id: metadata.pellets.target.id}
+  ];
+}
+
 module.exports = {
   type: 'CollisionMap',
   func: function Pacman () {
     return {
       'avatars': [
-        { and: ['walls'], start: [resetGhostToAvatarPosition] }
+        { and: ['walls'], start: [resetGhostToAvatarPosition] },
+        { and: ['pellets'], start: [eatPellet]}
       ]
     };
   }

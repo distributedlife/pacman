@@ -24,7 +24,8 @@ module.exports = {
   func: function () {
     return {
       walls: levelLoader(require('../data/map')).walls,
-      avatars: [{ sourceKey: 'players', via: avatar}]
+      avatars: [{ sourceKey: 'players', via: avatar }],
+      pellets: ['pacman.pellets']
     };
   }
 };

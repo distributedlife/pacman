@@ -5,6 +5,7 @@ var levelLoader = require('../data/level-loader');
 var walls = levelLoader(require('../data/map')).walls;
 var each = require('lodash').each;
 var avatars = {};
+var pellets = {};
 
 function createBoard (dims) {
   var shape = new PIXI.Graphics();
@@ -17,7 +18,7 @@ function createBoard (dims) {
 
 function createWall (wall) {
   var shape = new PIXI.Graphics();
-  shape.beginFill(0x0000FF);
+  shape.beginFill(0x1d2dac);
   shape.drawRect(wall.position.x, wall.position.y, wall.width, wall.height);
   shape.zIndex = 1000;
 
@@ -26,13 +27,22 @@ function createWall (wall) {
 
 function createAvatar (avatar) {
   var shape = new PIXI.Graphics();
-  shape.beginFill(0x888800);
+  shape.beginFill(0xfef854);
   shape.drawRect(0, 0, 10, 10);
   shape.position.x = avatar.position.x - 5;
   shape.position.y = avatar.position.y - 5;
   shape.zIndex = 1;
 
-  console.log(avatar.position);
+  return shape;
+}
+
+function createPellet (pellet) {
+  var shape = new PIXI.Graphics();
+  shape.beginFill(0xf1b7ae);
+  shape.drawRect(0, 0, 2, 2);
+  shape.position.x = pellet.x - 1;
+  shape.position.y = pellet.y - 1;
+  shape.zIndex = 1;
 
   return shape;
 }
@@ -41,6 +51,16 @@ function addAvatar (id, player, stage) {
   avatars[id] = createAvatar(player.pacman.avatar);
 
   stage.addChild(avatars[id]);
+}
+
+function addPellet (id, pellet, stage) {
+  pellets[id] = createPellet(pellet);
+
+  stage.addChild(pellets[id]);
+}
+
+function removePellet (id, pellet, stage) {
+  stage.removeChild(pellets[id]);
 }
 
 function moveAvatar (id, player) {
@@ -57,6 +77,8 @@ function display (dims, stage, tracker) {
 
   tracker().onElementAdded('players', addAvatar, [stage]);
   tracker().onElementChanged('players', moveAvatar);
+  tracker().onElementAdded('pacman.pellets', addPellet, [stage]);
+  tracker().onElementRemoved('pacman.pellets', removePellet, [stage]);
 }
 
 module.exports = display;

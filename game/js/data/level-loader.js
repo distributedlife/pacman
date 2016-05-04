@@ -1,16 +1,35 @@
 'use strict';
 
 var each = require('lodash').each;
+var sequence = require('distributedlife-sequence');
 
 var gridSize = 10;
 
 function parseCell (colIndex, rowIndex) {
   return {
-    'position': {'x': colIndex * gridSize, 'y': rowIndex * gridSize},
-    'width': gridSize,
-    'height': gridSize
+    position: {'x': colIndex * gridSize, 'y': rowIndex * gridSize},
+    width: gridSize,
+    height: gridSize
   };
 }
+
+function parseCellWithId (colIndex, rowIndex) {
+  return {
+    id: sequence.next('map-thing'),
+    position: {'x': colIndex * gridSize, 'y': rowIndex * gridSize},
+    width: gridSize,
+    height: gridSize
+  };
+}
+
+function parsePointWithId (colIndex, rowIndex) {
+  return {
+    id: sequence.next('map-thing'),
+    x: (colIndex * gridSize) + (gridSize / 2),
+    y: (rowIndex * gridSize) + (gridSize / 2)
+  };
+}
+
 
 function parsePoint (colIndex, rowIndex) {
   return {
@@ -20,7 +39,7 @@ function parsePoint (colIndex, rowIndex) {
 }
 
 var parsers = {
-  '.': parseCell,
+  '.': parsePointWithId,
   '=': parseCell,
   '*': parseCell,
   'X': parsePoint,
