@@ -103,8 +103,8 @@ function createAvatar (player) {
   });
 
   animations.left.visible = true;
-  avatar.position.x = player.position.x * gridSize;
-  avatar.position.y = player.position.y * gridSize;
+  avatar.position.x = player.position.x - 16;
+  avatar.position.y = player.position.y - 16;
   avatar.scale = scale[role];
   avatar.zIndex = 1;
 
@@ -168,8 +168,8 @@ function removeEnergiser (id, energiser, stage) {
 function moveAvatar (id, current, prior) {
   var direction = current.pacman.direction;
 
-  avatars[id].avatar.position.x = current.pacman.position.x * gridSize;
-  avatars[id].avatar.position.y = current.pacman.position.y * gridSize;
+  avatars[id].avatar.position.x = current.pacman.position.x -8;
+  avatars[id].avatar.position.y = current.pacman.position.y -8;
 
   avatars[id].animations[prior.pacman.direction].visible = false;
   avatars[id].animations[direction].visible = true;

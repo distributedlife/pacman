@@ -20,23 +20,6 @@ function stopMoving (delta, state, metadata) {
   return [p(playerId, 'pacman.moving'), false];
 }
 
-function snapPosition (delta, state, metadata) {
-  console.log(metadata.avatars.target.position);
-  console.log(metadata.walls.target.position);
-  var playerId = metadata.avatars.target.id;
-  var position = state.unwrap(p(playerId, 'pacman.position'));
-
-  var snappedPosition = {
-    x: Math.floor(position.x / 16) * 16,
-    y: Math.floor(position.y / 16) * 16
-  };
-
-  return [
-    [p(playerId, 'pacman.proxy'), snappedPosition],
-    [p(playerId, 'pacman.position'), snappedPosition]
-  ];
-}
-
 function eatPellet (delta, state, metadata) {
   return ['pacman.pellets-', {id: metadata.pellets.target.id}];
 }

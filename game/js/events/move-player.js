@@ -29,6 +29,10 @@ var directionToVelocity = {
   down:  {x: 0, y: +1}
 };
 
+function movingHorizontally (direction) {
+  return direction === 'left' || direction === 'right';
+}
+
 module.exports = {
   type: 'MovePlayer',
   deps: ['Config'],
@@ -43,6 +47,10 @@ module.exports = {
       var modifier = config().pacman.speeds[isGhost(role) ? 'ghost' : 'pacman'];
 
       return base * modifier;
+    }
+
+    function snap (p) {
+      return Math.round(p / 16) * 16;
     }
 
     function moveCollisionProxy (delta, state) {
@@ -62,6 +70,12 @@ module.exports = {
         var speed = getSpeedOfPlayer(player.pacman.role);
 
         var newPosition = add(position, scale(velocity, speed * delta));
+
+        if (movingHorizontally(player.pacman.direction)) {
+          newPosition.y = snap(newPosition.y);
+        } else {
+          newPosition.x = snap(newPosition.x);
+        }
 
         return [
           [p(player.id, 'pacman.proxy'), newPosition],
