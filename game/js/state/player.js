@@ -1,6 +1,6 @@
 'use strict';
 
-var levelLoader = require('../data/level-loader');
+var loader = require('../data/level-loader');
 
 var roles = ['pacman', 'blinky', 'pinky', 'inky', 'clyde'];
 
@@ -15,19 +15,17 @@ function assignRole (playerId) {
 module.exports = {
   type: 'PlayerStateSeed',
   deps: ['Config'],
-  func: function Amazing () {
-
+  func: function pacman () {
     return function seedPlayerState (playerId) {
       return {
         pacman: {
           role: assignRole(playerId),
           score: 0,
-          frozenTurns: 0,
-          avatar: {
-            position: levelLoader(require('../data/map')).spawn[0],
-            velocity: {x: -1, y: 0},
-            ghost: levelLoader(require('../data/map')).spawn[0]
-          }
+          eatingTime: 0,
+          moving: true,
+          position: loader(require('../data/map'))['pacman-spawn'][0].position,
+          direction: 'left',
+          proxy: loader(require('../data/map'))['pacman-spawn'][0].position
         }
       };
     };

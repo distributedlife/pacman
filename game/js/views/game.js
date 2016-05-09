@@ -22,6 +22,12 @@ function calculateOffset (boardDimensions, screenDimensions) {
   }
 }
 
+function sortChildren (stage) {
+  stage.children.sort(function(a, b) {
+      return (b.zIndex || 0) - (a.zIndex || 0);
+  });
+}
+
 function scaleBoard (dims, config) {
   if (boardIsLargerThanScreen(config.pacman.board, dims)) {
     var ratio = Math.min(
@@ -66,30 +72,43 @@ module.exports = {
     return function setup (dims, playerNumber) {
       scalingFactor = dims.usableWidth / 280;
 
-      stage = new PIXI.Container();
-      var renderer = PIXI.autoDetectRenderer(dims.usableWidth, dims.usableHeight);
-      $()('#' + config().client.element).append(renderer.view);
+      var renderer;
 
-      offset = calculateOffset(config().pacman.board, dims);
-      stage.position.x = offset.x;
-      stage.position.y = offset.y;
-      scale = scaleBoard(dims, config());
-      stage.scale.x = scale.x;
-      stage.scale.y = scale.y;
+      PIXI.loader
+        .add('/game/assets/images/pacman.json')
+        .add('/game/assets/images/ghost.json')
+        .load(function () {
+          stage = new PIXI.Container();
+          renderer = PIXI.autoDetectRenderer(dims.usableWidth, dims.usableHeight);
+          $()('#' + config().client.element).append(renderer.view);
 
-      // if (deviceMode() === 'observer') {
-        setupScreenAsSharedScreen(dims, stage, tracker);
-      // }
+          offset = calculateOffset(config().pacman.board, dims);
+          stage.position.x = offset.x;
+          stage.position.y = offset.y;
+          scale = scaleBoard(dims, config());
+          stage.scale.x = scale.x;
+          stage.scale.y = scale.y;
 
-      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pacman', setupScreenAsPacman, [stage]);
-      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'blinky', setupScreenAsBlinky, [stage]);
-      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pinky', setupScreenAsPinky, [stage]);
-      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'inky', setupScreenAsInky, [stage]);
-      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'clyde', setupScreenAsClyde, [stage]);
-      // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'waiting', setupScreenAsWaitingRoom, [stage]);
+          // if (deviceMode() === 'observer') {
+            setupScreenAsSharedScreen(dims, stage, tracker);
+          // }
+
+          // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pacman', setupScreenAsPacman, [stage]);
+          // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'blinky', setupScreenAsBlinky, [stage]);
+          // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pinky', setupScreenAsPinky, [stage]);
+          // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'inky', setupScreenAsInky, [stage]);
+          // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'clyde', setupScreenAsClyde, [stage]);
+          // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'waiting', setupScreenAsWaitingRoom, [stage]);
+
+          sortChildren(stage);
+        });
 
       define()('OnRenderFrame', function OnRenderFrame () {
         return function renderScene () {
+          if (!renderer) {
+            return;
+          }
+
           renderer.render(stage);
         };
       });

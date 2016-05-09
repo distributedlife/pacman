@@ -11,17 +11,26 @@
       "width": 520,
       "height": 520
     },
-    "avatar": {
-      "speed": 50
+    "fright": {
+      "duration": 5,
+      "flashes": 5
+    },
+    "speeds": {
+      "base": 100,
+      "pacman": 0.80,
+      "ghost": 0.75,
+      "fright": {
+        "pacman": 0.90,
+        "ghost": 0.50
+      }
     }
   },
   "ensemble": {
     "maxPlayers": 5,
-    "autoSaveThrottle": 30
+    "autoSaveThrottle": 100
   },
   "debug": {
-    "develop": true,
-    "multiplayer": true
+    "develop": true
   },
   "logging": {
     "logLevel": "info"

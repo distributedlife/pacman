@@ -8,49 +8,74 @@ function p(id, path) {
   return 'players:' + id + '.' + path;
 }
 
-function setPositionToGhost (delta, state) {
+function setPositionToProxy (delta, state) {
   return map(state.unwrap('players'), function (player) {
+    if (!player.pacman.moving) {
+      return [];
+    }
+
     return [
-      p(player.id, 'pacman.avatar.position'), state.unwrap(p(player.id, 'pacman.avatar.ghost'))
+      p(player.id, 'pacman.position'), state.unwrap(p(player.id, 'pacman.proxy'))
     ];
   });
 }
 
 var define = require('ensemblejs/lib/define').default;
 
-function decrement (current) {
-  return current - 1;
-}
+var directionToVelocity = {
+  left:  {x: -1, y: 0},
+  right: {x: +1, y: 0},
+  up:    {x: 0, y: -1},
+  down:  {x: 0, y: +1}
+};
 
 module.exports = {
   type: 'MovePlayer',
   deps: ['Config'],
   func: function Pacman (config) {
 
-    function moveCollisionGhost (delta, state) {
+    function isGhost (role) {
+      return role !== 'pacman';
+    }
+
+    function getSpeedOfPlayer (role) {
+      var base = config().pacman.speeds.base;
+      var modifier = config().pacman.speeds[isGhost(role) ? 'ghost' : 'pacman'];
+
+      return base * modifier;
+    }
+
+    function moveCollisionProxy (delta, state) {
       return map(state.unwrap('players'), function (player) {
-        if (player.pacman.frozenTurns > 0) {
-          return [p(player.id, 'pacman.frozenTurns'), decrement];
+        if (player.pacman.eatingTime > 0) {
+          return [
+            p(player.id, 'pacman.eatingTime'), player.pacman.eatingTime - delta
+          ];
         }
 
-        var position = player.pacman.avatar.position;
-        var velocity = player.pacman.avatar.velocity;
-        var speed = config().pacman.avatar.speed;
+        if (!player.pacman.moving) {
+          return [];
+        }
+
+        var position = player.pacman.position;
+        var velocity = directionToVelocity[player.pacman.direction];
+        var speed = getSpeedOfPlayer(player.pacman.role);
 
         var newPosition = add(position, scale(velocity, speed * delta));
 
         return [
-          p(player.id, 'pacman.avatar.ghost'), newPosition
+          [p(player.id, 'pacman.proxy'), newPosition],
+          [p(player.id, 'pacman.eatingTime'), 0]
         ];
       });
     }
 
     define('OnPhysicsFrame', function Pacman () {
-      return setPositionToGhost;
+      return setPositionToProxy;
     });
 
     define('OnPhysicsFrame', function Pacman () {
-      return moveCollisionGhost;
+      return moveCollisionProxy;
     });
   }
 };

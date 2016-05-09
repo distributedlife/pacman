@@ -5,29 +5,41 @@ function p(id, path) {
 }
 
 function up (state, input, data) {
-  return [p(data.playerId, 'pacman.avatar.velocity.y'), -1];
+  return [
+    [p(data.playerId, 'pacman.direction'), 'up'],
+    [p(data.playerId, 'pacman.moving'), true]
+  ];
 }
 
 function down (state, input, data) {
-  return [p(data.playerId, 'pacman.avatar.velocity.y'), +1];
+  return [
+    [p(data.playerId, 'pacman.direction'), 'down'],
+    [p(data.playerId, 'pacman.moving'), true]
+  ];
 }
 
 function left (state, input, data) {
-  return [p(data.playerId, 'pacman.avatar.velocity.x'), -1];
+  return [
+    [p(data.playerId, 'pacman.direction'), 'left'],
+    [p(data.playerId, 'pacman.moving'), true]
+  ];
 }
 
 function right (state, input, data) {
-  return [p(data.playerId, 'pacman.avatar.velocity.x'), +1];
+  return [
+    [p(data.playerId, 'pacman.direction'), 'right'],
+    [p(data.playerId, 'pacman.moving'), true]
+  ];
 }
 
 module.exports = {
   type: 'ActionMap',
   func: function Pacman () {
     return {
-      up: [ {call: up, onRelease: true} ],
-      down: [ {call: down, onRelease: true} ],
-      left: [ {call: left, onRelease: true} ],
-      right: [ {call: right, onRelease: true} ]
+      up: [{ call: up }],
+      down: [{ call: down }],
+      left: [{ call: left }],
+      right: [{ call: right }]
     };
   }
 };

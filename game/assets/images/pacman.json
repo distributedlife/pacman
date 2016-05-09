@@ -1,0 +1,188 @@
+{
+  "frames": {
+    "pacman-right-1": {
+      "frame": {"x":0,"y":0,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-right-2": {
+      "frame": {"x":16,"y":0,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-down-1": {
+      "frame": {"x":0,"y":16,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-down-2": {
+      "frame": {"x":16,"y":16,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-left-1": {
+      "frame": {"x":0,"y":32,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-left-2": {
+      "frame": {"x":16,"y":32,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-up-1": {
+      "frame": {"x":0,"y":48,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-up-2": {
+      "frame": {"x":16,"y":48,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-full-1": {
+      "frame": {"x":0,"y":64,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-full-2": {
+      "frame": {"x":16,"y":64,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-1": {
+      "frame": {"x":0,"y":80,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-2": {
+      "frame": {"x":16,"y":80,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-3": {
+      "frame": {"x":0,"y":96,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-4": {
+      "frame": {"x":16,"y":96,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-5": {
+      "frame": {"x":0,"y":112,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-6": {
+      "frame": {"x":16,"y":112,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-7": {
+      "frame": {"x":0,"y":128,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-8": {
+      "frame": {"x":16,"y":128,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-9": {
+      "frame": {"x":0,"y":144,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-10": {
+      "frame": {"x":16,"y":144,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-11": {
+      "frame": {"x":0,"y":160,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    },
+    "pacman-death-12": {
+      "frame": {"x":16,"y":160,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16},
+      "pivot": {"x":0.5,"y":0.5}
+    }
+  },
+  "meta": {
+    "app": "ensemble.js",
+    "version": "1.0",
+    "image": "pacman.png",
+    "format": "RGBA8888",
+    "size": {"w":34,"h":178},
+    "scale": "1"
+  }
+}
