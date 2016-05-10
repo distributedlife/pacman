@@ -23,7 +23,8 @@ module.exports = {
       pacman: {
         pellets: pellets,
         energisers: energisers,
-        frightenedDurationRemaining: 0
+        frightenedDurationRemaining: 0,
+        ghostNear: false
       }
     };
   }

@@ -2,6 +2,8 @@
 
 var PIXI = require('pixi.js');
 
+import {sortChildren} from './pixi';
+
 function boardIsSmallerThenScreen(boardDimensions, screenDimensions) {
   return (boardDimensions.width < screenDimensions.usableWidth ||
       boardDimensions.height < screenDimensions.usableHeight);
@@ -17,20 +19,14 @@ function calculateOffset (boardDimensions, screenDimensions) {
       x: (screenDimensions.usableWidth - boardDimensions.width) / 2,
       y: (screenDimensions.usableHeight - boardDimensions.height) / 2
     };
-  } else {
-    return { x: 0, y: 0 };
   }
-}
 
-function sortChildren (stage) {
-  stage.children.sort(function(a, b) {
-      return (b.zIndex || 0) - (a.zIndex || 0);
-  });
+  return { x: 0, y: 0 };
 }
 
 function scaleBoard (dims, config) {
   if (boardIsLargerThanScreen(config.pacman.board, dims)) {
-    var ratio = Math.min(
+    let ratio = Math.min(
       dims.screenWidth/config.pacman.board.width,
       dims.screenHeight/config.pacman.board.height
     );
@@ -39,12 +35,12 @@ function scaleBoard (dims, config) {
       x: ratio,
       y: ratio
     };
-  } else {
-    return {
-      x: 1.0,
-      y: 1.0
-    };
   }
+
+  return {
+    x: 1.0,
+    y: 1.0
+  };
 }
 
 // var define = require('ensemblejs/define');
@@ -57,7 +53,6 @@ module.exports = {
   func: function View (config, tracker, define, $, deviceMode) {
 
     var scalingFactor = 1;
-
     var setupScreenAsSharedScreen = require('./shared');
     var setupScreenAsPacman = require('./pacman');
     var setupScreenAsBlinky = require('./blinky');
@@ -72,7 +67,7 @@ module.exports = {
     return function setup (dims, playerNumber) {
       scalingFactor = dims.usableWidth / 280;
 
-      var renderer;
+      let renderer;
 
       PIXI.loader
         .add('/game/assets/images/pacman.json')
@@ -93,7 +88,7 @@ module.exports = {
             setupScreenAsSharedScreen(dims, stage, tracker);
           // }
 
-          // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pacman', setupScreenAsPacman, [stage]);
+          tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pacman', setupScreenAsPacman, [stage, tracker]);
           // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'blinky', setupScreenAsBlinky, [stage]);
           // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pinky', setupScreenAsPinky, [stage]);
           // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'inky', setupScreenAsInky, [stage]);

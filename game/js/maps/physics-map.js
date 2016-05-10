@@ -7,7 +7,6 @@ var filter = require('lodash').filter;
 var levelLoader = require('../data/level-loader');
 
 var length = 15;
-// var offset = length / 2;
 
 function avatar (player) {
   var avatar = {
@@ -22,8 +21,25 @@ function avatar (player) {
   return avatar;
 }
 
+function makeGhostArea (ghost) {
+  var area = {
+    id: ghost.id,
+    radius: length * 2
+  };
+
+  merge(area, ghost.pacman);
+
+  area.position = {x: area.proxy.x, y: area.proxy.y};
+
+  return area;
+}
+
 function ghosts (state) {
   return map(reject(state.players, {pacman: {role: 'pacman'}}), avatar);
+}
+
+function ghostArea (state) {
+  return map(reject(state.players, {pacman: {role: 'pacman'}}), makeGhostArea);
 }
 
 function pacman (state) {
@@ -39,6 +55,7 @@ module.exports = {
       pellets: ['pacman.pellets'],
       energisers: ['pacman.energisers'],
       ghosts: [ghosts],
+      ghostArea: [ghostArea],
       pacman: [pacman]
     };
   }

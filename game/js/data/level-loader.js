@@ -50,7 +50,6 @@ var walls = [
   'cell-bottom-right',
   'cell-gate-left',
   'cell-gate-right',
-  'cell-gate',
   'double-top-left',
   'double-top-right',
   'double-top',

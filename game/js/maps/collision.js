@@ -2,6 +2,8 @@
 
 var reject = require('lodash').reject;
 var map = require('lodash').map;
+var nextRole = require('../logic/avatar-roles').nextRole;
+var loader = require('../data/level-loader');
 
 function p(id, path) {
   return 'players:' + id + '.' + path;
@@ -43,8 +45,32 @@ function pauseToEat (duration) {
   };
 }
 
-function die () {
-  console.log('die');
+function updateHighestScore (delta, state, metadata) {
+  var playerId = metadata.pacman.target.id;
+  var score = state.get(p(playerId, 'pacman.score'));
+
+  return [p(playerId, 'pacman.highestScore'), score];
+}
+
+function changePlaces (delta, state) {
+  var players = state.unwrap('players');
+
+  return map(players, function (player) {
+
+    var role = nextRole(player.pacman.role, players.length);
+    var position = loader(require('../data/map'))[role][0].position;
+    var initialDirections = require('../logic/avatar-roles').initialDirections;
+
+    return [
+      [p(player.id, 'pacman.role'), role],
+      [p(player.id, 'pacman.position'), position],
+      [p(player.id, 'pacman.proxy'), position],
+      [p(player.id, 'pacman.direction'), initialDirections[role]],
+      [p(player.id, 'pacman.eatingTime'), 0],
+      [p(player.id, 'pacman.moving'), false],
+      [p(player.id, 'pacman.score'), 0]
+    ];
+  });
 }
 
 var directionReverser = {
@@ -66,6 +92,10 @@ function reverseGhosts (delta, state) {
   });
 }
 
+function scarySounds () {
+  return ['pacman.ghostNear', true];
+}
+
 module.exports = {
   type: 'CollisionMap',
   deps: ['Config'],
@@ -78,22 +108,26 @@ module.exports = {
 
     return {
       avatars: [
-        { and: ['walls'], start: [
-          resetProxyToAvatarPosition, stopMoving
-        ] },
+        {
+          and: ['walls'], start: [resetProxyToAvatarPosition, stopMoving]
+        },
       ],
       pacman: [
         {
-          and: ['pellets'], start: [
-            eatPellet, increaseScore(10), pauseToEat(1)
-          ]
+          and: ['pellets'], start: [eatPellet, increaseScore(10), pauseToEat(1)]
         },
         {
-          and: ['energisers'], start: [
-            eatEnergiser, increaseScore(50), pauseToEat(3), reverseGhosts, frightenGhosts
-          ]
+          and: ['energisers'], start: [eatEnergiser, increaseScore(50), pauseToEat(3), reverseGhosts, frightenGhosts]
         },
-        { and: ['ghosts'], start: [die] }
+        {
+          and: ['ghosts'], start: [updateHighestScore, changePlaces]
+        },
+        {
+          and: ['ghost-area'], start: [scarySounds]
+        },
+        {
+          and: ['cell-gate'], start: [resetProxyToAvatarPosition, stopMoving]
+        }
       ]
     };
   }

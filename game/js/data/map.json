@@ -65,10 +65,10 @@
     "0": { "type": "split-top-right-vertical", "parser": "cell" },
     "3": { "type": "split-bottom-left", "parser": "cell" },
     "4": { "type": "split-bottom-right", "parser": "cell" },
-    "X": { "type": "pacman-spawn", "parser": "cell" },
-    "R": { "type": "blinky-spawn", "parser": "point" },
-    "B": { "type": "inky-spawn", "parser": "point" },
-    "P": { "type": "pinky-spawn", "parser": "point" },
-    "Y": { "type": "clyde-spawn", "parser": "point" }
+    "X": { "type": "pacman", "parser": "cell" },
+    "R": { "type": "blinky", "parser": "cell" },
+    "B": { "type": "inky", "parser": "cell" },
+    "P": { "type": "pinky", "parser": "cell" },
+    "Y": { "type": "clyde", "parser": "cell" }
   }
 }

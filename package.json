@@ -8,17 +8,21 @@
   },
   "dependencies": {
     "distributedlife-sequence": "^1.0.1",
-    "ensemblejs": "^6.0.0-develop-36",
+    "ensemblejs": "file:///Users/distributedlife/projects/ensemblejs",
     "gamepad-api-mappings": "^4.0.0",
     "howler": "^2.0.0-beta12",
     "numeral": "^1.5.3",
-    "pixi.js": "^3.0.11"
+    "pixi.js": "^3.0.11",
+    "vibrate": "^1.0.0"
   },
   "devDependencies": {
+    "eslint": "^2.9.0",
     "gulp": "^3.9.0"
   },
   "scripts": {
-    "start": "gulp && gulp db:start && node game.js | bunyan -o short || true && gulp db:stop",
+    "prestart": "gulp && gulp db:start && notify -t \"pacman\" -m \"starting...\"",
+    "start": "node game.js | bunyan -o short || true",
+    "poststart": "gulp db:stop",
     "test": "gulp project:test"
   },
   "author": "Ryan Boucher",

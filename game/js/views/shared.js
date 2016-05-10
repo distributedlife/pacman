@@ -1,140 +1,32 @@
 'use strict';
 
-// var Howl = require('howler').Howl;
-var PIXI = require('pixi.js');
+import {createBoard, createAvatar, createPellet, createEnergiser, createWall, sequences} from './pixi-pacman.js';
+
+import {sortChildren, getTextures} from './pixi.js';
+
+const INITIAL_SCORE = 0;
+const positionPacmanCorrectlyOffset = 8;
+
+var Howl = require('howler').Howl;
 var levelLoader = require('../data/level-loader');
 var walls = levelLoader(require('../data/map')).walls;
 var each = require('lodash').each;
-var map = require('lodash').map;
 var filter = require('lodash').filter;
 var avatars = {};
 var pellets = {};
 var energisers = {};
 var $ = require('zepto-browserify').$;
 
-// var death = new Howl({
-//   src: ['/game/assets/audio/pacman_death.wav']
-// });
-var movePlaying = false;
-// var move = new Howl({
-//   src: ['/game/assets/audio/pacman_move2.mp3'],
-//   loop: true,
-//   onend: function () {
-//     movePlaying = false;
-//   }
-// });
-var chompPlaying = false;
-// var chomp = new Howl({
-//   src: ['/game/assets/audio/pacman_chomp.wav'],
-//   sprite: { chomp: [0, 180] },
-//   onend: function () {
-//     chompPlaying = false;
-//   }
-// });
-// var eatGhost = new Howl({
-//   src: ['/game/assets/audio/pacman_eatghost.wav']
-// });
-
-var gridSize = 1;
-
-function createBoard (dims) {
-  var shape = new PIXI.Graphics();
-  shape.beginFill(0x000000);
-  shape.drawRect(0, 0, dims.usableWidth, dims.usableHeight);
-  shape.zIndex = 10000;
-
-  return shape;
-}
-
-function mazeImage (type) {
-  return '/game/assets/images/maze/' + type + '.png';
-}
-
-function image (type) {
-  return '/game/assets/images/' + type + '.png';
-}
-
-function createWall (wall) {
-  var sprite = new PIXI.Sprite.fromImage(mazeImage(wall.type), undefined, PIXI.SCALE_MODES.NEAREST);
-  sprite.position.x = wall.position.x * gridSize;
-  sprite.position.y = wall.position.y * gridSize;
-  sprite.scale = {x: 2.0, y: 2.0};
-  sprite.zIndex = 1000;
-
-  return sprite;
-}
-
-function getTextures(items) {
-  return map(items, function (item) {
-    return PIXI.Texture.fromFrame(item, undefined, PIXI.SCALE_MODES.NEAREST);
-  });
-}
-
-var sequences = {
-  pacman: {},
-  blinky: {},
-  pinky: {},
-  inky: {},
-  clyde: {}
-};
-
-var scale = {
-  pacman: {x: 2, y: 2},
-  blinky: {x: 1.0, y: 1.0},
-  pinky: {x: 1.0, y: 1.0},
-  inky: {x: 1.0, y: 1.0},
-  clyde: {x: 1.0, y: 1.0}
-};
-
-function createAvatar (player) {
-  var role = player.role;
-
-  var avatar = new PIXI.Container();
-  var animations = {};
-
-  Object.keys(sequences[role]).forEach(function(key) {
-    var animation = new PIXI.extras.MovieClip(sequences[role][key]);
-    animation.animationSpeed = 0.15;
-    animation.play();
-    animation.visible = false;
-
-    avatar.addChild(animation);
-    animations[key] = animation;
-  });
-
-  animations.left.visible = true;
-  avatar.position.x = player.position.x - 16;
-  avatar.position.y = player.position.y - 16;
-  avatar.scale = scale[role];
-  avatar.zIndex = 1;
-
-  return { animations: animations, avatar: avatar };
-}
-
-function createPellet (pellet) {
-  var sprite = new PIXI.Sprite.fromImage(image('pellet'), undefined, PIXI.SCALE_MODES.NEAREST);
-  sprite.position.x = pellet.position.x * gridSize;
-  sprite.position.y = pellet.position.y * gridSize;
-  sprite.scale = {x: 2.0, y: 2.0};
-  sprite.zIndex = 10;
-
-  return sprite;
-}
-
-function createEnergiser (energiser) {
-  var sprite = new PIXI.Sprite.fromImage(image('energiser'), undefined, PIXI.SCALE_MODES.NEAREST);
-  sprite.position.x = energiser.position.x * gridSize;
-  sprite.position.y = energiser.position.y * gridSize;
-  sprite.scale = {x: 2.0, y: 2.0};
-  sprite.zIndex = 10;
-
-  return sprite;
-}
+// var death = new Howl({ src: ['/game/assets/audio/pacman_death.wav'] });
+// var eatGhost = new Howl({ src: ['/game/assets/audio/pacman_eatghost.wav'] });
+var ghostNear = new Howl({ src: ['/game/assets/audio/ghost-near.mp3'] });
 
 function addAvatar (id, player, stage) {
   avatars[id] = createAvatar(player.pacman);
 
   stage.addChild(avatars[id].avatar);
+
+  sortChildren(stage);
 }
 
 function addPellet (id, pellet, stage) {
@@ -145,10 +37,6 @@ function addPellet (id, pellet, stage) {
 
 function removePellet (id, pellet, stage) {
   stage.removeChild(pellets[id]);
-  if (!chompPlaying) {
-    chompPlaying = true;
-    // chomp.play('chomp');
-  }
 }
 
 function addEnergiser (id, energiser, stage) {
@@ -159,28 +47,27 @@ function addEnergiser (id, energiser, stage) {
 
 function removeEnergiser (id, energiser, stage) {
   stage.removeChild(energisers[id]);
-  if (!chompPlaying) {
-    chompPlaying = true;
-    // chomp.play('chomp');
-  }
 }
 
-function moveAvatar (id, current, prior) {
-  var direction = current.pacman.direction;
+function moveAvatar (id, current, prior, stage) {
+  if ((current && current.role) !== (prior && prior.role)) {
+    stage.removeChild(avatars[id]);
 
-  avatars[id].avatar.position.x = current.pacman.position.x -8;
-  avatars[id].avatar.position.y = current.pacman.position.y -8;
+    addAvatar(id, current, stage);
+  }
 
-  avatars[id].animations[prior.pacman.direction].visible = false;
+  let direction = current.pacman.direction;
+
+  avatars[id].avatar.position.x = current.pacman.position.x -positionPacmanCorrectlyOffset;
+  avatars[id].avatar.position.y = current.pacman.position.y -positionPacmanCorrectlyOffset;
+
+  if (prior) {
+    avatars[id].animations[prior.pacman.direction].visible = false;
+  }
   avatars[id].animations[direction].visible = true;
 
   if (current.pacman.moving) {
     avatars[id].animations[direction].play();
-
-    if (current.pacman.role === 'pacman' && movePlaying === false) {
-      movePlaying = true;
-      // move.play();
-    }
   } else {
     avatars[id].animations[direction].stop();
   }
@@ -194,7 +81,7 @@ function updateScore (current) {
 function pacmanScore (state) {
   var pacman = filter(state.players, { pacman: { role: 'pacman' }})[0];
 
-  return (pacman === undefined) ? 0 : pacman.pacman.score;
+  return (pacman === undefined) ? INITIAL_SCORE : pacman.pacman.score;
 }
 
 function display (dims, stage, tracker) {
@@ -235,12 +122,15 @@ function display (dims, stage, tracker) {
   });
 
   tracker().onElementAdded('players', addAvatar, [stage]);
-  tracker().onElementChanged('players', moveAvatar);
+  tracker().onElementChanged('players', moveAvatar, [stage]);
   tracker().onElementAdded('pacman.pellets', addPellet, [stage]);
   tracker().onElementRemoved('pacman.pellets', removePellet, [stage]);
   tracker().onElementAdded('pacman.energisers', addEnergiser, [stage]);
   tracker().onElementRemoved('pacman.energisers', removeEnergiser, [stage]);
   tracker().onChangeOf(pacmanScore, updateScore);
+  tracker().onChangeTo('pacman.ghostNear', true, function () {
+    ghostNear.play();
+  });
 }
 
 module.exports = display;
