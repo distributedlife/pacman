@@ -12,6 +12,15 @@ function image (type) {
   return `/game/assets/images/${type}.png`;
 }
 
+const scale = {
+  pacman: {x: 2, y: 2},
+  blinky: {x: 1.0, y: 1.0},
+  pinky: {x: 1.0, y: 1.0},
+  inky: {x: 1.0, y: 1.0},
+  clyde: {x: 1.0, y: 1.0},
+  wall: {x: 2.0, y: 2.0}
+};
+
 export function createBoard (dims) {
   var shape = new PIXI.Graphics();
   shape.beginFill(black);
@@ -25,7 +34,7 @@ export function createWall (wall) {
   var sprite = new PIXI.Sprite.fromImage(mazeImage(wall.type), undefined, PIXI.SCALE_MODES.NEAREST);
   sprite.position.x = wall.position.x;
   sprite.position.y = wall.position.y;
-  sprite.scale = {x: 2.0, y: 2.0};
+  sprite.scale = scale.wall;
   sprite.zIndex = 1000;
 
   return sprite;
@@ -39,13 +48,6 @@ export const sequences = {
   clyde: {}
 };
 
-const scale = {
-  pacman: {x: 2, y: 2},
-  blinky: {x: 1.0, y: 1.0},
-  pinky: {x: 1.0, y: 1.0},
-  inky: {x: 1.0, y: 1.0},
-  clyde: {x: 1.0, y: 1.0}
-};
 
 export function createAvatar (player) {
   var role = player.role;

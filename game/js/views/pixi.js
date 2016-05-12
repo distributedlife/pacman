@@ -1,6 +1,7 @@
 var PIXI = require('pixi.js');
 
 const FRONT = 0;
+const HALF = 0.5;
 
 export function sortChildren (stage) {
   stage.children.sort((a, b) =>  (b.zIndex || FRONT) - (a.zIndex || FRONT));
@@ -12,19 +13,19 @@ export function getTextures(items) {
   });
 }
 
-function boardIsSmallerThenScreen(board, usable) {
+function isASmallerThanB(board, usable) {
   return (board.width < usable.width || board.height < usable.height);
 }
 
-function boardIsLargerThanScreen(board, usable) {
-  return !boardIsSmallerThenScreen(board, usable);
+function isALargerThanB(board, usable) {
+  return board.width >= usable.width && board.height >= usable.height;
 }
 
 export function calculateOffset (board, usable) {
-  if (boardIsSmallerThenScreen(board, usable)) {
+  if (isASmallerThanB(board, usable)) {
     return {
-      x: (usable.width - board.width) / 4,
-      y: (usable.height - board.height) / 4
+      x: (usable.width - board.width) * HALF,
+      y: (usable.height - board.height) * HALF
     };
   }
 
@@ -32,23 +33,35 @@ export function calculateOffset (board, usable) {
 }
 
 export function calculateScale (board, screen, usable) {
-  if (boardIsLargerThanScreen(board, usable)) {
-    // TODO: can we use ratio from somewhere else?
-    let ratio = Math.min(
-      screen.width/board.width,
-      screen.height/board.height
-    );
+  let min = Math.min(screen.width/board.width, screen.height/board.height);
 
+  let imin = Math.min(board.width/screen.width, board.height/screen.height);
+
+  console.log('board', board);
+  console.log('usable', usable);
+  console.log('screen', screen);
+  console.log(min, imin);
+
+  let ratio;
+  // if (usable.height > usable.width) {
+  //   ratio = Math.min(screen.width/board.width, screen.height/board.height);
+  // } else {
+  //   ratio = Math.max(screen.width/board.width, screen.height/board.height);
+  // }
+
+  ratio = Math.min(screen.width/board.width, screen.height/board.height);
+
+
+  if (isALargerThanB(board, usable)) {
+    console.log('larger');
     return {
       x: ratio,
       y: ratio
     };
   }
 
-  return {
-    x: 1.0,
-    y: 1.0
-  };
+  console.log('smaller');
+  return { x: 1.0, y: 1.0 };
 }
 
 export function resizeRenderer (renderer, usable) {
