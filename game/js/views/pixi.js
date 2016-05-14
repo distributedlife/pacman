@@ -1,10 +1,11 @@
 var PIXI = require('pixi.js');
 
-const FRONT = 0;
-const HALF = 0.5;
+const Front = 0;
+const Half = 0.5;
+const None = 0;
 
 export function sortChildren (stage) {
-  stage.children.sort((a, b) =>  (b.zIndex || FRONT) - (a.zIndex || FRONT));
+  stage.children.sort((a, b) =>  (b.zIndex || Front) - (a.zIndex || Front));
 }
 
 export function getTextures(items) {
@@ -17,51 +18,28 @@ function isASmallerThanB(board, usable) {
   return (board.width < usable.width || board.height < usable.height);
 }
 
-function isALargerThanB(board, usable) {
-  return board.width >= usable.width && board.height >= usable.height;
-}
-
-export function calculateOffset (board, usable) {
+function calculateOffset (board, usable) {
   if (isASmallerThanB(board, usable)) {
+    const margin = {
+      x: usable.width - board.width,
+      y: usable.height - board.height
+    };
+
     return {
-      x: (usable.width - board.width) * HALF,
-      y: (usable.height - board.height) * HALF
+      x: margin.x < None ? None : margin.x * Half,
+      y: margin.y < None ? None : margin.y * Half
     };
   }
 
-  return { x: 0, y: 0 };
+  return {x: 0, y: 0 };
 }
 
-export function calculateScale (board, screen, usable) {
-  let min = Math.min(screen.width/board.width, screen.height/board.height);
+export function calculateScale (board, usable) {
+  const ratio = Math.min(
+    usable.width / board.width, usable.height / board.height
+  );
 
-  let imin = Math.min(board.width/screen.width, board.height/screen.height);
-
-  console.log('board', board);
-  console.log('usable', usable);
-  console.log('screen', screen);
-  console.log(min, imin);
-
-  let ratio;
-  // if (usable.height > usable.width) {
-  //   ratio = Math.min(screen.width/board.width, screen.height/board.height);
-  // } else {
-  //   ratio = Math.max(screen.width/board.width, screen.height/board.height);
-  // }
-
-  ratio = Math.min(screen.width/board.width, screen.height/board.height);
-
-
-  if (isALargerThanB(board, usable)) {
-    console.log('larger');
-    return {
-      x: ratio,
-      y: ratio
-    };
-  }
-
-  console.log('smaller');
-  return { x: 1.0, y: 1.0 };
+  return { x: ratio, y: ratio };
 }
 
 export function resizeRenderer (renderer, usable) {
@@ -72,16 +50,21 @@ export function resizeRenderer (renderer, usable) {
   renderer.resize(usable.width, usable.height);
 }
 
-export function resizeStage (stage, board, screen, usable) {
+export function resizeStage (stage, board, usable) {
   if (!stage) {
     return;
   }
 
-  const scale = calculateScale(board, screen, usable);
+  const scale = calculateScale(board, usable);
   stage.scale.x = scale.x;
   stage.scale.y = scale.y;
 
-  const offset = calculateOffset(board, usable);
+  const scaledBoard = {
+    width: board.width * scale.x,
+    height: board.height * scale.y
+  };
+
+  const offset = calculateOffset(scaledBoard, usable);
   stage.position.x = offset.x;
   stage.position.y = offset.y;
 }

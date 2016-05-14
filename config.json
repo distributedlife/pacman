@@ -10,10 +10,6 @@
     }
   },
   "pacman": {
-    "board": {
-      "width": 520,
-      "height": 520
-    },
     "fright": {
       "duration": 5,
       "flashes": 5
@@ -30,6 +26,7 @@
   },
   "ensemble": {
     "maxPlayers": 5,
+    "pause": "never",
     "autoSaveThrottle": 100
   },
   "debug": {

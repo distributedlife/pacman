@@ -6,7 +6,6 @@ import {on} from 'ensemblejs/lib/events';
 
 // var state = require('ensemblejs/state');;
 
-//jshint maxparams:false
 module.exports = {
   type: 'OnClientReady',
   deps: ['Config', 'StateTracker', 'Window'],
@@ -34,20 +33,16 @@ module.exports = {
 
     function resize (dims) {
       const board = {
-        width: config().pacman.board.width,
-        height: config().pacman.board.height
-      };
-      const screen = {
-        width: dims.screenWidth,
-        height: dims.screenHeight
+        width: 448,
+        height: 496
       };
       const usable = {
         width: dims.usableWidth,
         height: dims.usableHeight
       };
 
-      resizeStage(stage, board, screen, usable);
       resizeRenderer(renderer, usable);
+      resizeStage(stage, board, usable);
     }
 
     on('Resize', function OnResize () { return resize; });
