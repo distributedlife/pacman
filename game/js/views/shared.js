@@ -15,7 +15,7 @@ var filter = require('lodash').filter;
 var avatars = {};
 var pellets = {};
 var energisers = {};
-var $ = require('zepto-browserify').$;
+var $ = require('jquery-browserify');
 
 // var death = new Howl({ src: ['/game/assets/audio/pacman_death.wav'] });
 // var eatGhost = new Howl({ src: ['/game/assets/audio/pacman_eatghost.wav'] });

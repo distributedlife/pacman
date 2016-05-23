@@ -13,6 +13,7 @@
     "howler": "^2.0.0-beta12",
     "numeral": "^1.5.3",
     "pixi.js": "^3.0.11",
+    "pugify": "^1.0.3",
     "vibrate": "^1.0.0"
   },
   "devDependencies": {
@@ -20,7 +21,7 @@
     "gulp": "^3.9.0"
   },
   "scripts": {
-    "prestart": "gulp && gulp db:start && notify -t \"pacman\" -m \"starting...\"",
+    "prestart": "gulp && gulp db:start",
     "start": "node game.js | bunyan -o short || true",
     "poststart": "gulp db:stop",
     "test": "gulp project:test"
