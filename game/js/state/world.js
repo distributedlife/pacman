@@ -1,28 +1,27 @@
 'use strict';
 
-var levelLoader = require('../data/level-loader');
-var map = require('lodash').map;
+const levelLoader = require('../data/level-loader');
 
 module.exports = {
   type: 'StateSeed',
   func: function Amazing () {
-    var pellets = levelLoader(require('../data/map')).pellet;
-    var energisers = levelLoader(require('../data/map')).energisers;
+    const pellets = levelLoader(require('../data/map')).pellet;
+    const energisers = levelLoader(require('../data/map')).energisers;
 
-    map(pellets, function (pellet) {
+    pellets.map(function (pellet) {
       pellet.eaten = false;
       return pellet;
     });
 
-    map(energisers, function (pellet) {
+    energisers.map(function (pellet) {
       pellet.eaten = false;
       return pellet;
     });
 
     return {
       pacman: {
-        pellets: pellets,
-        energisers: energisers,
+        pellets,
+        energisers,
         frightenedDurationRemaining: 0,
         ghostNear: false
       }

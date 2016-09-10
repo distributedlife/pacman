@@ -1,5 +1,6 @@
-var PIXI = require('pixi.js');
+const PIXI = require('pixi.js');
 
+import read from 'ok-selector';
 const black = 0x000000;
 const topLeft = {x: 0, y: 0};
 const positionPacmanCorrectlyOffset = 8;
@@ -22,7 +23,7 @@ const scale = {
 };
 
 export function createBoard (dims) {
-  var shape = new PIXI.Graphics();
+  const shape = new PIXI.Graphics();
   shape.beginFill(black);
   shape.drawRect(topLeft.x, topLeft.y, dims.usableWidth, dims.usableHeight);
   shape.zIndex = 10000;
@@ -31,7 +32,7 @@ export function createBoard (dims) {
 }
 
 export function createWall (wall) {
-  var sprite = new PIXI.Sprite.fromImage(mazeImage(wall.type), undefined, PIXI.SCALE_MODES.NEAREST);
+  const sprite = new PIXI.Sprite.fromImage(mazeImage(wall.type), undefined, PIXI.SCALE_MODES.NEAREST);
   sprite.position.x = wall.position.x;
   sprite.position.y = wall.position.y;
   sprite.scale = scale.wall;
@@ -50,13 +51,13 @@ export const sequences = {
 
 
 export function createAvatar (player) {
-  var role = player.role;
+  const role = read(player, 'role');
 
-  var avatar = new PIXI.Container();
-  var animations = {};
+  const avatar = new PIXI.Container();
+  const animations = {};
 
   Object.keys(sequences[role]).forEach(function(key) {
-    var animation = new PIXI.extras.MovieClip(sequences[role][key]);
+    const animation = new PIXI.extras.MovieClip(sequences[role][key]);
     animation.animationSpeed = 0.15;
     animation.play();
     animation.visible = false;
@@ -66,18 +67,18 @@ export function createAvatar (player) {
   });
 
   animations.left.visible = true;
-  avatar.position.x = player.position.x - positionPacmanCorrectlyOffset;
-  avatar.position.y = player.position.y - positionPacmanCorrectlyOffset;
+  avatar.position.x = read(player, 'position.x') - positionPacmanCorrectlyOffset;
+  avatar.position.y = read(player, 'position.y') - positionPacmanCorrectlyOffset;
   avatar.scale = scale[role];
   avatar.zIndex = 1;
 
-  return { animations: animations, avatar: avatar };
+  return { animations, avatar };
 }
 
 export function createPellet (pellet) {
-  var sprite = new PIXI.Sprite.fromImage(image('pellet'), undefined, PIXI.SCALE_MODES.NEAREST);
-  sprite.position.x = pellet.position.x;
-  sprite.position.y = pellet.position.y;
+  const sprite = new PIXI.Sprite.fromImage(image('pellet'), undefined, PIXI.SCALE_MODES.NEAREST);
+  sprite.position.x = read(pellet, 'position.x');
+  sprite.position.y = read(pellet, 'position.y');
   sprite.scale = {x: 2.0, y: 2.0};
   sprite.zIndex = 10;
 
@@ -85,9 +86,9 @@ export function createPellet (pellet) {
 }
 
 export function createEnergiser (energiser) {
-  var sprite = new PIXI.Sprite.fromImage(image('energiser'), undefined, PIXI.SCALE_MODES.NEAREST);
-  sprite.position.x = energiser.position.x;
-  sprite.position.y = energiser.position.y;
+  const sprite = new PIXI.Sprite.fromImage(image('energiser'), undefined, PIXI.SCALE_MODES.NEAREST);
+  sprite.position.x = read(energiser, 'position.x');
+  sprite.position.y = read(energiser, 'position.y');
   sprite.scale = {x: 2.0, y: 2.0};
   sprite.zIndex = 10;
 

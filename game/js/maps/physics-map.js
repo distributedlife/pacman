@@ -1,62 +1,60 @@
 'use strict';
 
-var merge = require('lodash').merge;
-var map = require('lodash').map;
-var reject = require('lodash').reject;
-var filter = require('lodash').filter;
-var levelLoader = require('../data/level-loader');
+import read, { unwrap } from 'ok-selector';
+// const reject = require('lodash').reject;
+const levelLoader = require('../data/level-loader');
 
-var length = 15;
+const length = 15;
 
-function avatar (player) {
-  var avatar = {
-    id: player.id,
-    length: length
+function mapAvatar (player) {
+  const avatar = {
+    id: read(player, 'id'),
+    length,
+    ...unwrap(player, 'pacman')
   };
 
-  merge(avatar, player.pacman);
-
-  avatar.position = {x: avatar.proxy.x, y: avatar.proxy.y};
+  // avatar.position = {x: avatar.proxy.x, y: avatar.proxy.y};
 
   return avatar;
 }
 
-function makeGhostArea (ghost) {
-  var area = {
-    id: ghost.id,
-    radius: length * 2
-  };
+// function makeGhostArea (ghost) {
+//   var area = {
+//     id: ghost.id,
+//     radius: length * 2
+//   };
 
-  merge(area, ghost.pacman);
+//   merge(area, ghost.pacman);
 
-  area.position = {x: area.proxy.x, y: area.proxy.y};
+//   area.position = {x: area.proxy.x, y: area.proxy.y};
 
-  return area;
-}
+//   return area;
+// }
 
-function ghosts (state) {
-  return map(reject(state.players, {pacman: {role: 'pacman'}}), avatar);
-}
+// function ghosts (state) {
+//   return map(reject(state.players, {pacman: {role: 'pacman'}}), mapAvatar);
+// }
 
-function ghostArea (state) {
-  return map(reject(state.players, {pacman: {role: 'pacman'}}), makeGhostArea);
-}
+// function ghostArea (state) {
+//   return map(reject(state.players, {pacman: {role: 'pacman'}}), makeGhostArea);
+// }
 
 function pacman (state) {
-  return map(filter(state.players, {pacman: {role: 'pacman'}}), avatar);
+  // console.log(state.get('players').filter((player) => player.get('pacman').get('role') === 'pacman'));
+  // return state.get('players').filter((player) => player.get('pacman').get('role') === 'pacman').map(mapAvatar);
+  return [];
+  // return map(filter(state.get('players'), {pacman: {role: 'pacman'}}), mapAvatar);
 }
 
 module.exports = {
   type: 'PhysicsMap',
-  func: function () {
-    return {
-      walls: levelLoader(require('../data/map')).walls,
-      avatars: [{sourceKey: 'players', via: avatar}],
-      pellets: ['pacman.pellets'],
-      energisers: ['pacman.energisers'],
-      ghosts: [ghosts],
-      ghostArea: [ghostArea],
-      pacman: [pacman]
-    };
-  }
+  func: () => ({
+    walls: levelLoader(require('../data/map')).walls,
+    avatars: [{sourceKey: 'players', via: mapAvatar}],
+    // pellets: ['pacman.pellets'],
+    // energisers: ['pacman.energisers'],
+    // ghosts: [ghosts],
+    // ghostArea: [ghostArea],
+    // pacman: [pacman]
+  })
 };

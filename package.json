@@ -1,19 +1,15 @@
 {
   "name": "pacman",
   "version": "1.0.0",
+  "private": "true",
   "description": "The classic game by Namco.",
-  "engines": {
-    "node": "latest",
-    "npm": "latest"
-  },
   "dependencies": {
     "distributedlife-sequence": "^1.0.1",
-    "ensemblejs": "file:///Users/distributedlife/projects/ensemblejs",
+    "ensemblejs": "^6.0.0",
     "gamepad-api-mappings": "^4.0.0",
     "howler": "^2.0.0-beta12",
     "numeral": "^1.5.3",
     "pixi.js": "^3.0.11",
-    "pugify": "^1.0.3",
     "vibrate": "^1.0.0"
   },
   "devDependencies": {

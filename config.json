@@ -15,7 +15,7 @@
       "flashes": 5
     },
     "speeds": {
-      "base": 100,
+      "base": 200,
       "pacman": 0.80,
       "ghost": 0.75,
       "fright": {

@@ -1,20 +1,24 @@
 {
   "root": true,
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended"],
   "env": {
     "node": true,
     "shared-node-browser": true,
-    "es6": true
+    "es6": true,
+    "mocha": true
   },
   "parserOptions": {
-    "sourceType": "module"
-  },
+    "sourceType": "module",
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+        "experimentalObjectRestSpread": true
+    }
+    },
   "plugins": [],
   "ecmaFeatures": {
     "experimentalObjectRestSpread": true
   },
   "rules": {
-    "indent": ["error", 2],
     "comma-dangle": ["error", "never"],
     "array-callback-return": "error",
     "block-scoped-var": "error",
@@ -27,6 +31,7 @@
     "guard-for-in": ["error"],
     "no-alert": ["error"],
     "no-caller": ["error"],
+    "no-console": ["off"],
     "no-else-return": ["error"],
     "no-empty-function": ["error"],
     "no-eq-null": ["error"],
@@ -41,7 +46,7 @@
     "no-iterator": ["error"],
     "no-lone-blocks": ["error"],
     "no-loop-func": ["error"],
-    "no-magic-numbers": ["error", {"enforceConst": true, "ignoreArrayIndexes": true}],
+    "no-magic-numbers": ["off", {"enforceConst": true, "ignoreArrayIndexes": true}],
     "no-native-reassign": ["error"],
     "no-new": ["error"],
     "no-new-func": "error",
@@ -66,7 +71,7 @@
     "no-warning-comments": "error",
     "no-with": "error",
     "radix": ["error", "always"],
-    "vars-on-top": "error",
+    "vars-on-top": "off",
     "wrap-iife": ["error", "outside"],
     "yoda": "error",
     "no-catch-shadow": "error",
@@ -91,6 +96,15 @@
     "no-underscore-dangle": ["error"],
     "no-unneeded-ternary": "error",
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
-    "semi": ["error", "always"]
+    "semi": ["off", "always"],
+    "prefer-const": ["error", {"destructuring": "any", "ignoreReadBeforeAssign": false}],
+    "no-var": ["error"],
+    "prefer-template": ["error"],
+    "arrow-parens": ["error", "always"],
+    "object-shorthand": ["error"],
+    "prefer-rest-params": ["error"],
+    "prefer-spread": ["error"],
+    "rest-spread-spacing": ["error", "never"],
+    "template-curly-spacing": ["error", "never"]
   }
 }

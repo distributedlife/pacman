@@ -1,6 +1,13 @@
 'use strict';
 
-var roles = ['pacman', 'blinky', 'pinky', 'inky', 'clyde'];
+const roles = ['pacman', 'blinky', 'pinky', 'inky', 'clyde'];
+const initialDirections = {
+  pacman: 'left',
+  blinky: 'left',
+  pinky: 'up',
+  inky: 'up',
+  clyde: 'up'
+};
 
 function assignRole (playerId) {
   if ((playerId - 1) >= roles.length) {
@@ -11,22 +18,9 @@ function assignRole (playerId) {
 }
 
 function nextRole (role, playerCount) {
-  var index = roles.indexOf(role);
+  const index = roles.indexOf(role);
 
   return (index === 0) ? roles[playerCount - 1] : roles[index - 1];
 }
 
-var initialDirections = {
-  pacman: 'left',
-  blinky: 'left',
-  pinky: 'up',
-  inky: 'up',
-  clyde: 'up'
-};
-
-
-module.exports = {
-  assignRole: assignRole,
-  nextRole: nextRole,
-  initialDirections: initialDirections
-};
+module.exports = { assignRole, nextRole, initialDirections };

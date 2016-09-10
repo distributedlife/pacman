@@ -1,8 +1,6 @@
 'use strict';
 
-function p(id, path) {
-  return 'players:' + id + '.' + path;
-}
+const p = (id, path) => `players:${id}.${path}`;
 
 function up (state, input, data) {
   return [

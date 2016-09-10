@@ -1,95 +1,80 @@
 'use strict';
 
-var map = require('lodash').map;
-var add = require('distributedlife-sat').vector.add;
-var scale = require('distributedlife-sat').vector.scale;
+import read, { unwrap } from 'ok-selector';
+const add = require('distributedlife-sat').vector.add;
+const scale = require('distributedlife-sat').vector.scale;
+const define = require('ensemblejs/lib/define').default;
 
-function p(id, path) {
-  return 'players:' + id + '.' + path;
-}
+const NodeSize = 16;
+const Zero = 0;
+const directionToVelocity = {
+  left:  {x: -1, y:  0},
+  right: {x:  1, y:  0},
+  up:    {x:  0, y: -1},
+  down:  {x:  0, y:  1}
+};
 
 function setPositionToProxy (delta, state) {
-  return map(state.unwrap('players'), function (player) {
-    if (!player.pacman.moving) {
+  return read(state, 'players').map(function (player) {
+    if (!read(player, 'pacman.moving')) {
       return [];
     }
 
-    return [
-      p(player.id, 'pacman.position'), state.unwrap(p(player.id, 'pacman.proxy'))
-    ];
+    return [`players:${read(player, 'id')}.pacman.position`, unwrap(player, 'pacman.proxy')];
   });
 }
 
-var define = require('ensemblejs/lib/define').default;
-
-var directionToVelocity = {
-  left:  {x: -1, y: 0},
-  right: {x: +1, y: 0},
-  up:    {x: 0, y: -1},
-  down:  {x: 0, y: +1}
-};
-
-function movingHorizontally (direction) {
-  return direction === 'left' || direction === 'right';
-}
+const isMovingHorizontally = (direction) => direction === 'left' || direction === 'right';
+const isGhost = (role) => role !== 'pacman';
+const snap = (position) => Math.round(position / NodeSize) * NodeSize;
 
 module.exports = {
   type: 'MovePlayer',
   deps: ['Config'],
   func: function Pacman (config) {
 
-    function isGhost (role) {
-      return role !== 'pacman';
-    }
-
     function getSpeedOfPlayer (role) {
-      var base = config().pacman.speeds.base;
-      var modifier = config().pacman.speeds[isGhost(role) ? 'ghost' : 'pacman'];
+      const base = config().pacman.speeds.base;
+      const modifier = config().pacman.speeds[isGhost(role) ? 'ghost' : 'pacman'];
 
       return base * modifier;
     }
 
-    function snap (p) {
-      return Math.round(p / 16) * 16;
-    }
-
     function moveCollisionProxy (delta, state) {
-      return map(state.unwrap('players'), function (player) {
-        if (player.pacman.eatingTime > 0) {
+      return read(state, 'players').map(function (player) {
+        const playerId = read(player, 'id');
+
+        if (read(player, 'pacman.eatingTime') > Zero) {
           return [
-            p(player.id, 'pacman.eatingTime'), player.pacman.eatingTime - delta
+            `players:${playerId}.pacman.eatingTime`, read(player, 'pacman.eatingTime') - delta
           ];
         }
 
-        if (!player.pacman.moving) {
+        if (!read(player, 'pacman.moving')) {
           return [];
         }
 
-        var position = player.pacman.position;
-        var velocity = directionToVelocity[player.pacman.direction];
-        var speed = getSpeedOfPlayer(player.pacman.role);
+        const currentDirection = read(player, 'pacman.direction');
+        const position = unwrap(player, 'pacman.position');
+        const velocity = directionToVelocity[currentDirection];
+        const speed = getSpeedOfPlayer(read(player, 'pacman.role'));
 
-        var newPosition = add(position, scale(velocity, speed * delta));
+        const newPosition = add(position, scale(velocity, speed * delta));
 
-        if (movingHorizontally(player.pacman.direction)) {
+        if (isMovingHorizontally(currentDirection)) {
           newPosition.y = snap(newPosition.y);
         } else {
           newPosition.x = snap(newPosition.x);
         }
 
         return [
-          [p(player.id, 'pacman.proxy'), newPosition],
-          [p(player.id, 'pacman.eatingTime'), 0]
+          [`players:${playerId}.pacman.proxy`, newPosition],
+          [`players:${playerId}.pacman.eatingTime`, Zero]
         ];
       });
     }
 
-    define('OnPhysicsFrame', function Pacman () {
-      return setPositionToProxy;
-    });
-
-    define('OnPhysicsFrame', function Pacman () {
-      return moveCollisionProxy;
-    });
+    define('OnPhysicsFrame', () => setPositionToProxy);
+    define('OnPhysicsFrame', () => moveCollisionProxy);
   }
 };

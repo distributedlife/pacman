@@ -1,28 +1,27 @@
 'use strict';
 
+import read, { unwrap } from 'ok-selector';
 import {createBoard, createAvatar, createPellet, createEnergiser, createWall, sequences} from './pixi-pacman.js';
 
 import {sortChildren, getTextures} from './pixi.js';
 
-const INITIAL_SCORE = 0;
+// const INITIAL_SCORE = 0;
 const positionPacmanCorrectlyOffset = 8;
 
-var Howl = require('howler').Howl;
-var levelLoader = require('../data/level-loader');
-var walls = levelLoader(require('../data/map')).walls;
-var each = require('lodash').each;
-var filter = require('lodash').filter;
-var avatars = {};
-var pellets = {};
-var energisers = {};
-var $ = require('jquery-browserify');
+// var Howl = require('howler').Howl;
+const levelLoader = require('../data/level-loader');
+const walls = levelLoader(require('../data/map')).walls;
+const avatars = {};
+const pellets = {};
+const energisers = {};
+const $ = require('jquery-browserify');
 
 // var death = new Howl({ src: ['/game/assets/audio/pacman_death.wav'] });
 // var eatGhost = new Howl({ src: ['/game/assets/audio/pacman_eatghost.wav'] });
-var ghostNear = new Howl({ src: ['/game/assets/audio/ghost-near.mp3'] });
+// var ghostNear = new Howl({ src: ['/game/assets/audio/ghost-near.mp3'] });
 
 function addAvatar (id, player, stage) {
-  avatars[id] = createAvatar(player.pacman);
+  avatars[id] = createAvatar(read(player, 'pacman'));
 
   stage.addChild(avatars[id].avatar);
 
@@ -50,42 +49,43 @@ function removeEnergiser (id, energiser, stage) {
 }
 
 function moveAvatar (id, current, prior, stage) {
-  if ((current && current.role) !== (prior && prior.role)) {
+  if ((current && read(current, 'role')) !== (prior && read(prior, 'role'))) {
     stage.removeChild(avatars[id]);
 
     addAvatar(id, current, stage);
   }
 
-  let direction = current.pacman.direction;
+  const direction = read(current, 'pacman.direction');
+  const position = unwrap(current, 'pacman.position');
 
-  avatars[id].avatar.position.x = current.pacman.position.x -positionPacmanCorrectlyOffset;
-  avatars[id].avatar.position.y = current.pacman.position.y -positionPacmanCorrectlyOffset;
+  avatars[id].avatar.position.x = position.x - positionPacmanCorrectlyOffset;
+  avatars[id].avatar.position.y = position.y - positionPacmanCorrectlyOffset;
 
   if (prior) {
-    avatars[id].animations[prior.pacman.direction].visible = false;
+    avatars[id].animations[read(prior, 'pacman.direction')].visible = false;
   }
   avatars[id].animations[direction].visible = true;
 
-  if (current.pacman.moving) {
+  if (read(current, 'pacman.moving')) {
     avatars[id].animations[direction].play();
   } else {
     avatars[id].animations[direction].stop();
   }
 }
 
-function updateScore (current) {
-  $('#score').text(current);
-}
+// function updateScore (current) {
+//   $('#score').text(current);
+// }
 
-//Lens
-function pacmanScore (state) {
-  var pacman = filter(state.players, { pacman: { role: 'pacman' }})[0];
+// //Lens
+// function pacmanScore (state) {
+//   var pacman = filter(state.players, { pacman: { role: 'pacman' }})[0];
 
-  return (pacman === undefined) ? INITIAL_SCORE : pacman.pacman.score;
-}
+//   return (pacman === undefined) ? INITIAL_SCORE : pacman.pacman.score;
+// }
 
 function display (dims, stage, tracker) {
-  var overlay = require('../../views/overlays/pacman.pug');
+  const overlay = require('../../views/overlays/pacman.pug');
   $('#overlay').append(overlay());
 
   sequences.pacman.right = getTextures(['pacman-right-1', 'pacman-right-2']);
@@ -117,7 +117,7 @@ function display (dims, stage, tracker) {
 
   stage.addChild(createBoard(dims));
 
-  each(walls, function(wall) {
+  walls.forEach(function(wall) {
     stage.addChild(createWall(wall));
   });
 
@@ -127,10 +127,10 @@ function display (dims, stage, tracker) {
   tracker().onElementRemoved('pacman.pellets', removePellet, [stage]);
   tracker().onElementAdded('pacman.energisers', addEnergiser, [stage]);
   tracker().onElementRemoved('pacman.energisers', removeEnergiser, [stage]);
-  tracker().onChangeOf(pacmanScore, updateScore);
-  tracker().onChangeTo('pacman.ghostNear', true, function () {
-    ghostNear.play();
-  });
+  // tracker().onChangeOf(pacmanScore, updateScore);
+  // tracker().onChangeTo('pacman.ghostNear', true, function () {
+    // ghostNear.play();
+  // });
 }
 
 module.exports = display;

@@ -66,7 +66,7 @@ module.exports = {
           setupScreenAsSharedScreen(dims, stage, tracker);
           // }
 
-          tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pacman', setupScreenAsPacman, [stage, tracker]);
+          tracker().onChangeTo(`players:${playerNumber}.pacman.role`, 'pacman', setupScreenAsPacman, [stage, tracker]);
           // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'blinky', setupScreenAsBlinky, [stage]);
           // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'pinky', setupScreenAsPinky, [stage]);
           // tracker().onChangeTo('players:' + playerNumber + '.pacman.role', 'inky', setupScreenAsInky, [stage]);

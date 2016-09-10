@@ -1,134 +1,133 @@
 'use strict';
 
-var reject = require('lodash').reject;
-var map = require('lodash').map;
-var nextRole = require('../logic/avatar-roles').nextRole;
-var loader = require('../data/level-loader');
+import { unwrap } from 'ok-selector';
+// var reject = require('lodash').reject;
+// var nextRole = require('../logic/avatar-roles').nextRole;
+// var loader = require('../data/level-loader');
 
-function p(id, path) {
-  return 'players:' + id + '.' + path;
-}
+// const p = (id, path) => `players:${id}.${path}`;
 
 function resetProxyToAvatarPosition (delta, state, metadata) {
-  var playerId = metadata.avatars.target.id;
-  var position = state.unwrap(p(playerId, 'pacman.position'));
+  const playerId = metadata.avatars.target.id;
+  const position = unwrap(state, `players:${playerId}.pacman.position`);
 
-  return [p(playerId, 'pacman.proxy'), position];
+  return [`players:${playerId}.pacman.proxy`, position];
 }
 
 function stopMoving (delta, state, metadata) {
-  var playerId = metadata.avatars.target.id;
+  const playerId = metadata.avatars.target.id;
 
-  return [p(playerId, 'pacman.moving'), false];
+  return [`players:${playerId}.pacman.moving`, false];
 }
 
-function eatPellet (delta, state, metadata) {
-  return ['pacman.pellets-', {id: metadata.pellets.target.id}];
-}
+// function eatPellet (delta, state, metadata) {
+//   return ['pacman.pellets-', {id: metadata.pellets.target.id}];
+// }
 
-function eatEnergiser (delta, state, metadata) {
-  return ['pacman.energisers-', {id: metadata.energisers.target.id}];
-}
+// function eatEnergiser (delta, state, metadata) {
+//   return ['pacman.energisers-', {id: metadata.energisers.target.id}];
+// }
 
-function increaseScore (amount) {
-  return function addToScore (delta, state, metadata) {
-    var playerId = metadata.pacman.target.id;
-    var score = state.get(p(playerId, 'pacman.score'));
+// function increaseScore (amount) {
+//   return function addToScore (delta, state, metadata) {
+//     const playerId = metadata.pacman.target.id;
+//     const score = state.get('players').find((player) => player.get('id') === playerId).get('pacman').get('score');
 
-    return [p(playerId, 'pacman.score'), score + amount];
-  };
-}
+//     return [p(playerId, 'pacman.score'), score + amount];
+//   };
+// }
 
-function pauseToEat (duration) {
-  return function pauseAvatar (delta, state, metadata) {
-    return [p(metadata.pacman.target.id, 'pacman.eatingTime'), duration / 60];
-  };
-}
+// function updateHighestScore (delta, state, metadata) {
+//   var playerId = metadata.pacman.target.id;
+//   var score = find(state.players, {id: playerId}).pacman.score;
 
-function updateHighestScore (delta, state, metadata) {
-  var playerId = metadata.pacman.target.id;
-  var score = state.get(p(playerId, 'pacman.score'));
+//   return [p(playerId, 'pacman.highestScore'), score];
+// }
 
-  return [p(playerId, 'pacman.highestScore'), score];
-}
+// function changePlaces (delta, state) {
+//   return map(state.players, function (player) {
 
-function changePlaces (delta, state) {
-  var players = state.unwrap('players');
+//     var role = nextRole(player.pacman.role, state.players.length);
+//     var position = loader(require('../data/map'))[role][0].position;
+//     var initialDirections = require('../logic/avatar-roles').initialDirections;
 
-  return map(players, function (player) {
+//     return [
+//       [p(player.id, 'pacman.role'), role],
+//       [p(player.id, 'pacman.position'), position],
+//       [p(player.id, 'pacman.proxy'), position],
+//       [p(player.id, 'pacman.direction'), initialDirections[role]],
+//       [p(player.id, 'pacman.eatingTime'), 0],
+//       [p(player.id, 'pacman.moving'), false],
+//       [p(player.id, 'pacman.score'), 0]
+//     ];
+//   });
+// }
 
-    var role = nextRole(player.pacman.role, players.length);
-    var position = loader(require('../data/map'))[role][0].position;
-    var initialDirections = require('../logic/avatar-roles').initialDirections;
+// const directionReverser = {
+//   up: 'down',
+//   down: 'up',
+//   left: 'right',
+//   right: 'left'
+// };
 
-    return [
-      [p(player.id, 'pacman.role'), role],
-      [p(player.id, 'pacman.position'), position],
-      [p(player.id, 'pacman.proxy'), position],
-      [p(player.id, 'pacman.direction'), initialDirections[role]],
-      [p(player.id, 'pacman.eatingTime'), 0],
-      [p(player.id, 'pacman.moving'), false],
-      [p(player.id, 'pacman.score'), 0]
-    ];
-  });
-}
+// function reverseGhosts (delta, state) {
+//   var ghosts = reject(state.players, { pacman: { role: 'pacman' } });
 
-var directionReverser = {
-  up: 'down',
-  down: 'up',
-  left: 'right',
-  right: 'left'
-};
+//   return map(ghosts, function (ghost) {
+//     var direction = ghost.pacman.direction;
 
-function reverseGhosts (delta, state) {
-  var ghosts = reject(state.unwrap('players'), { pacman: { role: 'pacman' } });
+//     return [
+//       p(ghost.id, 'pacman.direction'), directionReverser[direction]
+//     ];
+//   });
+// }
 
-  return map(ghosts, function (ghost) {
-    var direction = ghost.pacman.direction;
+// function scarySounds () {
+//   return ['pacman.ghostNear', true];
+// }
 
-    return [
-      p(ghost.id, 'pacman.direction'), directionReverser[direction]
-    ];
-  });
-}
-
-function scarySounds () {
-  return ['pacman.ghostNear', true];
-}
+// const Score = {
+//   Pellet: 10,
+//   Energiser: 50
+// };
 
 module.exports = {
   type: 'CollisionMap',
   deps: ['Config'],
   func: function Pacman (config) {
-    function frightenGhosts () {
-      return [
-        'pacman.frightenedDurationRemaining', config().pacman.fright.duration
-      ];
-    }
+    // function frightenGhosts () {
+    //   return [
+    //     'pacman.frightenedDurationRemaining', config().pacman.fright.duration
+    //   ];
+    // }
 
     return {
       avatars: [
         {
           and: ['walls'], start: [resetProxyToAvatarPosition, stopMoving]
-        },
+        }
       ],
-      pacman: [
+      // pacman: [
+      //   {
+      //     and: ['pellets'], start: [eatPellet, increaseScore(Score.Pellet)]
+      //   },
+      //   {
+      //     and: ['energisers'], start: [eatEnergiser, increaseScore(Score.Energiser)]//, reverseGhosts, frightenGhosts]
+      //   }
+      // ]
+    };
+  }
+};
+
+
+/*
         {
-          and: ['pellets'], start: [eatPellet, increaseScore(10), pauseToEat(1)]
-        },
-        {
-          and: ['energisers'], start: [eatEnergiser, increaseScore(50), pauseToEat(3), reverseGhosts, frightenGhosts]
+          and: ['ghost-area'], start: [scarySounds]
         },
         {
           and: ['ghosts'], start: [updateHighestScore, changePlaces]
         },
         {
-          and: ['ghost-area'], start: [scarySounds]
-        },
-        {
           and: ['cell-gate'], start: [resetProxyToAvatarPosition, stopMoving]
         }
-      ]
-    };
-  }
-};
+      */
