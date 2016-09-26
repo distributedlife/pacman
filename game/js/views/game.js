@@ -2,7 +2,7 @@
 
 import PIXI from 'pixi.js';
 import {sortChildren, resizeStage, resizeRenderer} from './pixi';
-import {on} from 'ensemblejs/lib/events';
+import {on} from 'ensemblejs/lib';
 
 // var state = require('ensemblejs/state');;
 
