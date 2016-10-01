@@ -11,11 +11,15 @@ function resetProxyToAvatarPosition (delta, state, metadata) {
   const playerId = metadata.avatars.target.id;
   const position = unwrap(state, `players:${playerId}.pacman.position`);
 
+  // console.log('resetProxyToAvatarPosition');
+
   return [`players:${playerId}.pacman.proxy`, position];
 }
 
 function stopMoving (delta, state, metadata) {
   const playerId = metadata.avatars.target.id;
+
+  // console.log('stopMoving');
 
   return [`players:${playerId}.pacman.moving`, false];
 }

@@ -8,7 +8,6 @@ var chomp = new Howl({
 // var vibrate = require('vibrate');
 
 function removePellet (id) {
-  console.log(`Removed pellet from display ${id}`);
   chomp.play();
   // vibrate(50);
 }

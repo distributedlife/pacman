@@ -5,9 +5,14 @@
   },
   "client": {
     "aspectRatio": 1,
+    "physicsUpdate2Loop": 1000,
     "input": {
       "virtualGamepad": "4-way"
     }
+  },
+  "server": {
+    "physicsUpd2ateLoop": 1000,
+    "pushUpdate2Frequency": 3000
   },
   "pacman": {
     "fright": {
@@ -15,7 +20,7 @@
       "flashes": 5
     },
     "speeds": {
-      "base": 200,
+      "base": 0.1,
       "pacman": 0.80,
       "ghost": 0.75,
       "fright": {
@@ -31,7 +36,8 @@
   },
   "debug": {
     "develop": true,
-    "multiplayer": true
+    "multiplayer": true,
+    "everybodyIsPlayerOne": true
   },
   "logging": {
     "logLevel": "info"

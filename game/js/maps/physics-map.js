@@ -6,17 +6,12 @@ const levelLoader = require('../data/level-loader');
 
 const length = 15;
 
-function mapAvatar (player) {
-  const avatar = {
-    id: read(player, 'id'),
-    length,
-    ...unwrap(player, 'pacman')
-  };
-
-  // avatar.position = {x: avatar.proxy.x, y: avatar.proxy.y};
-
-  return avatar;
-}
+const mapAvatar = (player) => ({
+  id: read(player, 'id'),
+  length,
+  ...unwrap(player, 'pacman'),
+  position: unwrap(player, 'pacman.proxy')
+});
 
 // function makeGhostArea (ghost) {
 //   var area = {

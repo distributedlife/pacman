@@ -20,7 +20,9 @@ function setPositionToProxy (delta, state) {
       return [];
     }
 
-    return [`players:${read(player, 'id')}.pacman.position`, unwrap(player, 'pacman.proxy')];
+    const position = unwrap(player, 'pacman.proxy');
+
+    return [`players:${read(player, 'id')}.pacman.position`, position];
   });
 }
 
@@ -55,17 +57,18 @@ module.exports = {
         }
 
         const currentDirection = read(player, 'pacman.direction');
-        const position = unwrap(player, 'pacman.position');
+        const oldPosition = unwrap(player, 'pacman.proxy');
         const velocity = directionToVelocity[currentDirection];
         const speed = getSpeedOfPlayer(read(player, 'pacman.role'));
 
-        const newPosition = add(position, scale(velocity, speed * delta));
+        const newPosition = add(oldPosition, scale(velocity, speed * delta));
 
         if (isMovingHorizontally(currentDirection)) {
           newPosition.y = snap(newPosition.y);
         } else {
           newPosition.x = snap(newPosition.x);
         }
+
 
         return [
           [`players:${playerId}.pacman.proxy`, newPosition],
