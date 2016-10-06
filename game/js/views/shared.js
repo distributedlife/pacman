@@ -5,7 +5,6 @@ import {createBoard, createAvatar, createPellet, createEnergiser, createWall, se
 
 import {sortChildren, getTextures} from './pixi.js';
 
-// const INITIAL_SCORE = 0;
 const positionPacmanCorrectlyOffset = 8;
 
 // var Howl = require('howler').Howl;
@@ -73,16 +72,19 @@ function moveAvatar (id, current, prior, stage) {
   }
 }
 
-// function updateScore (current) {
-//   $('#score').text(current);
-// }
+const INITIAL_SCORE = 0;
+
+function updateScore (current) {
+  $('#score').text(current);
+}
 
 // //Lens
-// function pacmanScore (state) {
-//   var pacman = filter(state.players, { pacman: { role: 'pacman' }})[0];
+function pacmanScore (state) {
+  const pacman = read(state, 'players').find((player) => read(player, 'pacman.role') === 'pacman');
+  const score = read(pacman, 'pacman.score');
 
-//   return (pacman === undefined) ? INITIAL_SCORE : pacman.pacman.score;
-// }
+  return (pacman === undefined) ? INITIAL_SCORE : score;
+}
 
 function display (dims, stage, tracker) {
   const overlay = require('../../views/overlays/pacman.pug');
@@ -127,7 +129,7 @@ function display (dims, stage, tracker) {
   tracker().onElementRemoved('pacman.pellets', removePellet, [stage]);
   tracker().onElementAdded('pacman.energisers', addEnergiser, [stage]);
   tracker().onElementRemoved('pacman.energisers', removeEnergiser, [stage]);
-  // tracker().onChangeOf(pacmanScore, updateScore);
+  tracker().onChangeOf(pacmanScore, updateScore);
   // tracker().onChangeTo('pacman.ghostNear', true, function () {
     // ghostNear.play();
   // });

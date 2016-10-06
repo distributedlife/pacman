@@ -1,15 +1,15 @@
 'use strict';
 
-var Howl = require('howler').Howl;
-var chomp = new Howl({
+const Howl = require('howler').Howl;
+const chomp = new Howl({
   src: ['/game/assets/audio/eat-pellet.mp3', '/game/assets/audio/eat-pellet.wav'],
   buffer: true
 });
-// var vibrate = require('vibrate');
+const vibrate = require('vibrate');
 
-function removePellet (id) {
+function removePellet () {
   chomp.play();
-  // vibrate(50);
+  vibrate(50);
 }
 
 function display (current, prior, stage, tracker) {

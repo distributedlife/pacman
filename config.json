@@ -37,7 +37,7 @@
   "debug": {
     "develop": true,
     "multiplayer": true,
-    "everybodyIsPlayerOne": true
+    "everybodyIsPlayerOne": false
   },
   "logging": {
     "logLevel": "info"

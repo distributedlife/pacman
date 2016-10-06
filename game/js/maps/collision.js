@@ -11,35 +11,30 @@ function resetProxyToAvatarPosition (delta, state, metadata) {
   const playerId = metadata.avatars.target.id;
   const position = unwrap(state, `players:${playerId}.pacman.position`);
 
-  // console.log('resetProxyToAvatarPosition');
-
   return [`players:${playerId}.pacman.proxy`, position];
 }
 
 function stopMoving (delta, state, metadata) {
   const playerId = metadata.avatars.target.id;
 
-  // console.log('stopMoving');
-
   return [`players:${playerId}.pacman.moving`, false];
 }
 
-// function eatPellet (delta, state, metadata) {
-//   return ['pacman.pellets-', {id: metadata.pellets.target.id}];
-// }
+function eatPellet (delta, state, metadata) {
+  return ['pacman.pellets-', {id: metadata.pellets.target.id}];
+}
 
-// function eatEnergiser (delta, state, metadata) {
-//   return ['pacman.energisers-', {id: metadata.energisers.target.id}];
-// }
+function eatEnergiser (delta, state, metadata) {
+  return ['pacman.energisers-', {id: metadata.energisers.target.id}];
+}
 
-// function increaseScore (amount) {
-//   return function addToScore (delta, state, metadata) {
-//     const playerId = metadata.pacman.target.id;
-//     const score = state.get('players').find((player) => player.get('id') === playerId).get('pacman').get('score');
+function increaseScore (amount) {
+  const addAmountToCurrentScore = (current) => current + amount;
 
-//     return [p(playerId, 'pacman.score'), score + amount];
-//   };
-// }
+  return function addToScore (delta, state, metadata) {
+    return [`players:${metadata.pacman.target.id}.pacman.score`, addAmountToCurrentScore];
+  };
+}
 
 // function updateHighestScore (delta, state, metadata) {
 //   var playerId = metadata.pacman.target.id;
@@ -86,19 +81,20 @@ function stopMoving (delta, state, metadata) {
 //   });
 // }
 
-// function scarySounds () {
-//   return ['pacman.ghostNear', true];
-// }
+function scarySounds () {
+  console.log('woooooooo');
+  return ['pacman.ghostNear', true];
+}
 
-// const Score = {
-//   Pellet: 10,
-//   Energiser: 50
-// };
+const Score = {
+  Pellet: 10,
+  Energiser: 50
+};
 
 module.exports = {
   type: 'CollisionMap',
   deps: ['Config'],
-  func: function Pacman (config) {
+  func: function Pacman () {
     // function frightenGhosts () {
     //   return [
     //     'pacman.frightenedDurationRemaining', config().pacman.fright.duration
@@ -111,27 +107,23 @@ module.exports = {
           and: ['walls'], start: [resetProxyToAvatarPosition, stopMoving]
         }
       ],
-      // pacman: [
-      //   {
-      //     and: ['pellets'], start: [eatPellet, increaseScore(Score.Pellet)]
-      //   },
-      //   {
-      //     and: ['energisers'], start: [eatEnergiser, increaseScore(Score.Energiser)]//, reverseGhosts, frightenGhosts]
-      //   }
-      // ]
-    };
-  }
-};
-
-
-/*
+      pacman: [
+        {
+          and: ['cell-gate'], start: [resetProxyToAvatarPosition, stopMoving]
+        },
         {
           and: ['ghost-area'], start: [scarySounds]
         },
         {
-          and: ['ghosts'], start: [updateHighestScore, changePlaces]
+          and: ['ghosts'], start: []
         },
         {
-          and: ['cell-gate'], start: [resetProxyToAvatarPosition, stopMoving]
+          and: ['pellets'], start: [eatPellet, increaseScore(Score.Pellet)]
+        },
+        {
+          and: ['energisers'], start: [eatEnergiser, increaseScore(Score.Energiser)]//, reverseGhosts, frightenGhosts]
         }
-      */
+      ]
+    };
+  }
+};

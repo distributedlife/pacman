@@ -5,13 +5,15 @@ const levelLoader = require('../data/level-loader');
 module.exports = {
   type: 'StateSeed',
   func: function Amazing () {
-    const pellets = levelLoader(require('../data/map')).pellet;
+    let pellets = levelLoader(require('../data/map')).pellet;
     const energisers = levelLoader(require('../data/map')).energisers;
 
     pellets.map(function (pellet) {
       pellet.eaten = false;
       return pellet;
     });
+
+    pellets = pellets.filter(() => Math.random() * 100 < 25);
 
     energisers.map(function (pellet) {
       pellet.eaten = false;
