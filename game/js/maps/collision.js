@@ -1,11 +1,8 @@
 'use strict';
 
-import { unwrap } from 'ok-selector';
-// var reject = require('lodash').reject;
-// var nextRole = require('../logic/avatar-roles').nextRole;
-// var loader = require('../data/level-loader');
-
-// const p = (id, path) => `players:${id}.${path}`;
+import read, { unwrap } from 'ok-selector';
+const nextRole = require('../logic/avatar-roles').nextRole;
+const loader = require('../data/level-loader');
 
 function resetProxyToAvatarPosition (delta, state, metadata) {
   const playerId = metadata.avatars.target.id;
@@ -36,50 +33,51 @@ function increaseScore (amount) {
   };
 }
 
-// function updateHighestScore (delta, state, metadata) {
-//   var playerId = metadata.pacman.target.id;
-//   var score = find(state.players, {id: playerId}).pacman.score;
+function updateHighestScore (delta, state, metadata) {
+  const playerId = metadata.pacman.target.id;
+  const score = read(state, 'players:${playerId}.pacman.score');
 
-//   return [p(playerId, 'pacman.highestScore'), score];
-// }
+  return [`players:${playerId}.pacman.highestScore`, score];
+}
 
-// function changePlaces (delta, state) {
-//   return map(state.players, function (player) {
+function changePlaces (delta, state) {
+  const players = read(state, 'players');
 
-//     var role = nextRole(player.pacman.role, state.players.length);
-//     var position = loader(require('../data/map'))[role][0].position;
-//     var initialDirections = require('../logic/avatar-roles').initialDirections;
+  return players.map((player) => {
+    const role = nextRole(read(player, 'pacman.role'), players.length);
+    const position = loader(require('../data/map'))[role][0].position;
+    const initialDirections = require('../logic/avatar-roles').initialDirections;
 
-//     return [
-//       [p(player.id, 'pacman.role'), role],
-//       [p(player.id, 'pacman.position'), position],
-//       [p(player.id, 'pacman.proxy'), position],
-//       [p(player.id, 'pacman.direction'), initialDirections[role]],
-//       [p(player.id, 'pacman.eatingTime'), 0],
-//       [p(player.id, 'pacman.moving'), false],
-//       [p(player.id, 'pacman.score'), 0]
-//     ];
-//   });
-// }
+    const playerId = read(player, 'id');
 
-// const directionReverser = {
-//   up: 'down',
-//   down: 'up',
-//   left: 'right',
-//   right: 'left'
-// };
+    return [
+      [`players:${playerId}.pacman.role`, role],
+      [`players:${playerId}.pacman.position`, position],
+      [`players:${playerId}.pacman.proxy`, position],
+      [`players:${playerId}.pacman.direction`, initialDirections[role]],
+      [`players:${playerId}.pacman.eatingTime`, 0],
+      [`players:${playerId}.pacman.moving`, false],
+      [`players:${playerId}.pacman.score`, 0]
+    ];
+  });
+}
 
-// function reverseGhosts (delta, state) {
-//   var ghosts = reject(state.players, { pacman: { role: 'pacman' } });
+const directionReverser = {
+  up: 'down',
+  down: 'up',
+  left: 'right',
+  right: 'left'
+};
 
-//   return map(ghosts, function (ghost) {
-//     var direction = ghost.pacman.direction;
+const playerIsNotPacman = (player) => read(player, 'pacman.role') !== 'pacman';
 
-//     return [
-//       p(ghost.id, 'pacman.direction'), directionReverser[direction]
-//     ];
-//   });
-// }
+function reverseGhosts (delta, state) {
+  const ghosts = read(state, 'players').filter(playerIsNotPacman);
+
+  return ghosts.map((ghost) => [
+    `players:${read(ghost, 'id')}.pacman.direction`, directionReverser[read(ghost, 'pacman.direction')]
+  ]);
+}
 
 function scarySounds () {
   console.log('woooooooo');
@@ -94,34 +92,38 @@ const Score = {
 module.exports = {
   type: 'CollisionMap',
   deps: ['Config'],
-  func: function Pacman () {
-    // function frightenGhosts () {
-    //   return [
-    //     'pacman.frightenedDurationRemaining', config().pacman.fright.duration
-    //   ];
-    // }
+  func: function Pacman (config) {
+    function frightenGhosts () {
+      return ['pacman.frightenedDurationRemaining', config().pacman.fright.duration];
+    }
 
     return {
       avatars: [
         {
-          and: ['walls'], start: [resetProxyToAvatarPosition, stopMoving]
+          and: ['walls'],
+          start: [resetProxyToAvatarPosition, stopMoving]
         }
       ],
       pacman: [
         {
-          and: ['cell-gate'], start: [resetProxyToAvatarPosition, stopMoving]
+          and: ['cell-gate'],
+          start: [resetProxyToAvatarPosition, stopMoving]
         },
         {
-          and: ['ghost-area'], start: [scarySounds]
+          and: ['ghost-area'],
+          start: [scarySounds]
         },
         {
-          and: ['ghosts'], start: []
+          and: ['ghosts'],
+          start: []
         },
         {
-          and: ['pellets'], start: [eatPellet, increaseScore(Score.Pellet)]
+          and: ['pellets'],
+          start: [eatPellet, increaseScore(Score.Pellet)]
         },
         {
-          and: ['energisers'], start: [eatEnergiser, increaseScore(Score.Energiser)]//, reverseGhosts, frightenGhosts]
+          and: ['energisers'],
+          start: [eatEnergiser, increaseScore(Score.Energiser), frightenGhosts]
         }
       ]
     };

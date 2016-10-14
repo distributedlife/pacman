@@ -74,9 +74,7 @@ function moveAvatar (id, current, prior, stage) {
 
 const INITIAL_SCORE = 0;
 
-function updateScore (current) {
-  $('#score').text(current);
-}
+const updateScore = (current) => $('#score').text(current);
 
 // //Lens
 function pacmanScore (state) {
