@@ -32,7 +32,7 @@
   "ensemble": {
     "maxPlayers": 5,
     "pause": "never",
-    "autoSaveThrottle": 100
+    "autoSaveThrottle": 200
   },
   "debug": {
     "develop": true,
