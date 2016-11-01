@@ -5,7 +5,7 @@
   "description": "The classic game by Namco.",
   "dependencies": {
     "distributedlife-sequence": "^1.0.1",
-    "ensemblejs": "6.2.0",
+    "ensemblejs": "^6.2.2",
     "gamepad-api-mappings": "^4.0.0",
     "gulp": "^3.9.1",
     "howler": "^2.0.0-beta12",
